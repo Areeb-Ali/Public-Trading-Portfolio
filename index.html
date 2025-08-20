@@ -1,613 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Areeb Ali Khan – Trading Portfolio</title>
-  <meta name="description" content="Crypto & Financial Markets – Setups, Performance, and Analysis. Not financial advice." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trading Portfolio – Demo</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
-    :root{
-      --bg:#0b0f17;
-      --bg-soft:#0f1522;
-      --card:#121a2a;
-      --text:#e6edf3;
-      --muted:#9fb0c3;
-      --accent:#3aa0ff;
-      --success:#1fbf75;
-      --danger:#ff5a5a;
-      --warning:#ffb020;
-      --shadow: 0 10px 30px rgba(0,0,0,.25);
+    :root {
+      --bg-light: #f9fafb;
+      --bg-dark: #0f172a;
+      --text-light: #0f172a;
+      --text-dark: #f9fafb;
+      --primary: #2563eb;
+      --card-bg: #ffffff;
+      --card-dark: #1e293b;
     }
-    :root.light{
-      --bg:#f7f9fc; --bg-soft:#ffffff; --card:#ffffff; --text:#0c1420; --muted:#4b5b6c; --accent:#0a84ff; --success:#128f5a; --danger:#d93f3f; --warning:#b97800; --shadow: 0 10px 30px rgba(7,14,30,.08);
-    }
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    a{color:var(--accent);text-decoration:none}
-    .container{width:100%;max-width:1200px;margin:0 auto;padding:0 16px}
-    header{position:sticky;top:0;z-index:50;background:rgba(10,14,24,.7);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.06)}
-    .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
-    .brand{display:flex;gap:10px;align-items:center}
-    .brand .logo{width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#7c4dff);display:grid;place-items:center;box-shadow:var(--shadow)}
-    .brand .logo span{font-weight:800}
-    .nav a{margin:0 10px;color:var(--text);opacity:.9}
-    .nav a.active{color:var(--accent)}
-    .right-actions{display:flex;align-items:center;gap:10px}
-    .btn{border:1px solid rgba(255,255,255,.12);background:var(--card);color:var(--text);padding:8px 12px;border-radius:12px;cursor:pointer;box-shadow:var(--shadow)}
-    .btn.primary{background:linear-gradient(135deg,var(--accent),#7c4dff);border:none}
-    .btn.ghost{background:transparent}
-
-    .ticker{border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);background:var(--bg-soft)}
-    .ticker .row{display:flex;gap:18px;overflow:auto;padding:8px 0;scrollbar-width:none}
-    .chip{display:inline-flex;gap:8px;align-items:center;background:var(--card);padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.08)}
-    .chip .price{font-weight:700}
-    .chip.up{border-color:rgba(31,191,117,.3)}
-    .chip.down{border-color:rgba(255,90,90,.3)}
-
-    main{padding:32px 0}
-    section{display:none}
-    section.active{display:block}
-
-    .grid{display:grid;gap:16px}
-    .grid.cols-3{grid-template-columns:repeat(3,1fr)}
-    .grid.cols-2{grid-template-columns:repeat(2,1fr)}
-    @media(max-width:900px){.grid.cols-3{grid-template-columns:1fr}.grid.cols-2{grid-template-columns:1fr}}
-
-    .card{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:18px;padding:18px;box-shadow:var(--shadow)}
-    .card h3{margin:0 0 8px}
-    .muted{color:var(--muted)}
-    .kpi{display:flex;align-items:baseline;gap:6px;font-weight:800;font-size:28px}
-    .badge{font-size:12px;padding:4px 8px;border-radius:8px;border:1px solid rgba(255,255,255,.12)}
-
-    .table{width:100%;border-collapse:collapse}
-    .table th,.table td{padding:10px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left}
-    .table th{font-size:12px;letter-spacing:.02em;color:var(--muted)}
-    .table tr:hover{background:rgba(255,255,255,.02)}
-
-    .filters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px}
-    .input, select, textarea{width:100%;padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:transparent;color:var(--text)}
-    .row{display:flex;gap:12px}
-    .row > *{flex:1}
-
-    footer{margin:36px 0 18px;color:var(--muted);font-size:13px}
-    .tw{font-weight:700}
-
-    /* Modal */
-    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:16px}
-    .overlay.active{display:flex}
-    .modal{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;max-width:640px;width:100%}
+    * {margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', sans-serif;}
+    body {background: var(--bg-light); color: var(--text-light); transition: all 0.3s ease;}
+    body.dark {background: var(--bg-dark); color: var(--text-dark);} 
+    header {padding:1rem 2rem; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; background:inherit; z-index:1000;}
+    header nav a {margin:0 1rem; text-decoration:none; color:inherit; font-weight:500;}
+    header nav a:hover {color:var(--primary);}
+    .toggle-theme {cursor:pointer;}
+    section {padding:4rem 2rem; max-width:1200px; margin:auto;}
+    h1,h2,h3 {margin-bottom:1rem;}
+    .hero {text-align:center; padding:5rem 2rem;}
+    .hero h1 {font-size:2.5rem; color:var(--primary);}
+    .cards {display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:1.5rem;}
+    .card {background:var(--card-bg); padding:1.5rem; border-radius:1rem; box-shadow:0 2px 8px rgba(0,0,0,0.05);} 
+    body.dark .card {background:var(--card-dark);}
+    .ticker {display:flex; gap:2rem; justify-content:center; margin:2rem 0;}
+    .ticker-item {font-size:1rem; font-weight:600;}
+    footer {text-align:center; padding:2rem; background:inherit;}
+    .btn {padding:0.5rem 1rem; border:none; border-radius:0.5rem; cursor:pointer; background:var(--primary); color:white;}
   </style>
 </head>
 <body>
   <header>
-    <div class="container nav">
-      <div class="brand">
-        <div class="logo"><span>AA</span></div>
-        <div>
-          <div style="font-weight:800">Areeb Ali Khan</div>
-          <div class="muted" style="font-size:12px">Crypto & Markets Analyst</div>
-        </div>
-      </div>
-      <nav>
-        <a href="#home" class="navlink active">Home</a>
-        <a href="#about" class="navlink">About</a>
-        <a href="#portfolio" class="navlink">Setups</a>
-        <a href="#performance" class="navlink">Performance</a>
-        <a href="#analysis" class="navlink">Analysis</a>
-        <a href="#services" class="navlink">Services</a>
-        <a href="#contact" class="navlink">Contact</a>
-      </nav>
-      <div class="right-actions">
-        <button id="darkToggle" class="btn ghost" title="Toggle dark/light">🌓</button>
-        <a href="#newsletter" class="btn">Subscribe</a>
-      </div>
-    </div>
-    <div class="ticker">
-      <div class="container row" id="tickerRow">
-        <!-- live prices chips injected here -->
-      </div>
-    </div>
+    <div class="logo"><i class="fa-solid fa-chart-line"></i> MyTrading</div>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#portfolio">Portfolio</a>
+      <a href="#performance">Performance</a>
+      <a href="#analysis">Analysis</a>
+      <a href="#services">Services</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="toggle-theme"><i class="fa-solid fa-moon"></i></div>
   </header>
 
-  <main class="container">
-    <!-- HOME -->
-    <section id="home" class="active">
-      <div class="grid cols-3">
-        <div class="card">
-          <h2>Transparent Trading. Real Data.</h2>
-          <p class="muted">Setups, performance, and economic insights for BTC, ETH, Gold & S&P 500. <span class="badge">Not financial advice</span></p>
-          <div class="row">
-            <div class="card" style="flex:1">
-              <div class="muted">Overall Accuracy</div>
-              <div class="kpi" id="kpi-accuracy">—%</div>
-            </div>
-            <div class="card" style="flex:1">
-              <div class="muted">Last 30D Win Rate</div>
-              <div class="kpi" id="kpi-30d">—%</div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <h3>Latest Signals</h3>
-          <table class="table" id="latestSignalsTable">
-            <thead>
-              <tr><th>Asset</th><th>Type</th><th>Entry</th><th>TP</th><th>SL</th><th>Status</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-        <div class="card">
-          <h3>Upcoming Macro</h3>
-          <ul id="macroList" class="muted" style="line-height:1.8"></ul>
-          <div style="margin-top:8px" class="muted">CPI · FOMC · NFP
-            <div style="font-size:12px">(Add items in Firestore → <code>posts</code> with <em>tag: macro</em>)</div>
-          </div>
-        </div>
-      </div>
+  <section id="home" class="hero">
+    <h1>Trading Portfolio</h1>
+    <p>Transparent setups & performance tracking. Demo UI ready to customize.</p>
+    <div class="ticker">
+      <div class="ticker-item">BTC: $48,250</div>
+      <div class="ticker-item">ETH: $3,150</div>
+      <div class="ticker-item">Gold: $2,320</div>
+      <div class="ticker-item">S&P 500: 5,210</div>
+    </div>
+  </section>
 
-      <div class="card" style="margin-top:16px">
-        <h3>Markets Overview</h3>
-        <div class="grid cols-2">
-          <div class="card">
-            <div class="muted">BTC / USDT</div>
-            <!-- TradingView Widget BTC -->
-            <div class="tv" id="tv-btc"></div>
-          </div>
-          <div class="card">
-            <div class="muted">ETH / USDT</div>
-            <div class="tv" id="tv-eth"></div>
-          </div>
-          <div class="card">
-            <div class="muted">GOLD (XAUUSD)</div>
-            <div class="tv" id="tv-xau"></div>
-          </div>
-          <div class="card">
-            <div class="muted">S&P 500 (SPX)</div>
-            <div class="tv" id="tv-spx"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ABOUT -->
-    <section id="about">
-      <div class="grid cols-2">
-        <div class="card">
-          <h3>About Me</h3>
-          <p>Hi, I’m <span class="tw">Areeb Ali Khan</span> — Crypto & Financial Markets analyst. I combine Technical Analysis (TA) and Fundamental Analysis (FA) around macro events like CPI, FOMC and NFP. ACCA in progress → CFA later. Sharing real setups, transparent results.</p>
-          <ul class="muted">
-            <li>Education: ACCA (ongoing), Expert of Blockchain (Coursera)</li>
-            <li>Focus: BTC & ETH, majors, Gold, S&P 500</li>
-            <li>Tools: TA + macro + data-driven backtests</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Philosophy</h3>
-          <p class="muted">Risk first. Clarity over noise. Document everything. No cherry-picking — both wins and losses are posted.</p>
-          <div class="badge">Transparency</div> <div class="badge">Discipline</div> <div class="badge">Evidence</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SETUPS / PORTFOLIO -->
-    <section id="portfolio">
+  <section id="about">
+    <h2>About Me</h2>
+    <div class="cards">
       <div class="card">
-        <h3>Trade Setups</h3>
-        <div class="filters">
-          <select id="filter-asset"><option value="">All Assets</option><option>BTC</option><option>ETH</option><option>GOLD</option><option>SPX</option><option>ALT</option></select>
-          <select id="filter-type"><option value="">All Types</option><option>Long</option><option>Short</option><option>Spot</option><option>Futures</option></select>
-          <input id="filter-date" class="input" type="date" />
-          <button class="btn" id="btn-clear-filters">Clear Filters</button>
-          <button class="btn primary" id="btn-add-setup">+ Add Setup</button>
-        </div>
-        <table class="table" id="setupsTable">
-          <thead>
-            <tr><th>Date</th><th>Asset</th><th>Type</th><th>Entry</th><th>TP</th><th>SL</th><th>Result</th></tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+        <h3>Education</h3>
+        <p>ACCA (in progress), CFA planned, Blockchain Certification.</p>
       </div>
-    </section>
-
-    <!-- PERFORMANCE -->
-    <section id="performance">
-      <div class="grid cols-3">
-        <div class="card">
-          <div class="muted">Overall Accuracy</div>
-          <div class="kpi" id="perf-accuracy">—%</div>
-        </div>
-        <div class="card">
-          <div class="muted">Win / Loss</div>
-          <div class="kpi"><span id="perf-wins">—</span>/<span id="perf-losses">—</span></div>
-        </div>
-        <div class="card">
-          <div class="muted">This Month</div>
-          <div class="kpi" id="perf-month">—%</div>
-        </div>
-      </div>
-      <div class="card" style="margin-top:16px">
-        <h3>Monthly Stats</h3>
-        <table class="table" id="monthlyTable">
-          <thead><tr><th>Month</th><th>Trades</th><th>Wins</th><th>Losses</th><th>Accuracy</th></tr></thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- ANALYSIS -->
-    <section id="analysis">
       <div class="card">
-        <h3>Economic & Market Analysis</h3>
-        <button class="btn" id="btn-add-post">+ New Post</button>
-        <div id="postsList" class="grid cols-2" style="margin-top:12px"></div>
+        <h3>Experience</h3>
+        <p>5+ years in crypto and forex trading with focus on TA + FA.</p>
       </div>
-    </section>
+      <div class="card">
+        <h3>Philosophy</h3>
+        <p>Risk management, transparency, and disciplined execution.</p>
+      </div>
+    </div>
+  </section>
 
-    <!-- SERVICES -->
-    <section id="services">
-      <div class="grid cols-2">
-        <div class="card">
-          <h3>Services</h3>
-          <ul style="line-height:1.9">
-            <li><b>Account Management</b> – clear risk limits and terms.</li>
-            <li><b>Copy Trading</b> – details & exchange links.</li>
-            <li><b>Mentorship</b> – structured curriculum.</li>
-            <li><b>Affiliates</b> – transparent disclosures.</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Testimonials</h3>
-          <div id="testimonials" class="grid cols-2"></div>
-        </div>
+  <section id="portfolio">
+    <h2>Trade Setups (Demo)</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>BTC Long</h3>
+        <p>Entry: 45,000<br>TP: 48,000<br>SL: 44,000<br>Result: ✅ Win</p>
       </div>
-    </section>
+      <div class="card">
+        <h3>ETH Short</h3>
+        <p>Entry: 3,400<br>TP: 3,200<br>SL: 3,500<br>Result: ❌ Loss</p>
+      </div>
+    </div>
+  </section>
 
-    <!-- CONTACT -->
-    <section id="contact">
-      <div class="grid cols-2">
-        <div class="card">
-          <h3>Contact</h3>
-          <div class="row">
-            <input id="c-name" class="input" placeholder="Name" />
-            <input id="c-email" class="input" placeholder="Email" type="email" />
-          </div>
-          <textarea id="c-message" class="input" rows="5" placeholder="Your message"></textarea>
-          <div class="row">
-            <button class="btn primary" id="btn-send">Send</button>
-            <a class="btn" href="https://wa.me/" target="_blank">WhatsApp</a>
-            <a class="btn" href="https://t.me/" target="_blank">Telegram</a>
-          </div>
-        </div>
-        <div class="card" id="newsletter">
-          <h3>Newsletter</h3>
-          <p class="muted">Get weekly market outlooks in your inbox.</p>
-          <div class="row">
-            <input id="n-email" class="input" placeholder="Your email" type="email" />
-            <button class="btn" id="btn-subscribe">Subscribe</button>
-          </div>
-        </div>
+  <section id="performance">
+    <h2>Performance</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Overall Accuracy</h3>
+        <p>72% win rate</p>
       </div>
-      <div class="card" style="margin-top:16px">
-        <h3>Disclaimer</h3>
-        <p class="muted">All content is for educational purposes only and does not constitute financial advice. Trading involves risk. Do your own research.</p>
+      <div class="card">
+        <h3>July 2025</h3>
+        <p>Trades: 28<br>Wins: 20<br>Losses: 8</p>
       </div>
-    </section>
-  </main>
+    </div>
+  </section>
 
-  <footer class="container">
-    © <span id="year"></span> Areeb Ali Khan · All rights reserved
+  <section id="analysis">
+    <h2>Market Analysis (Demo)</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>CPI Update</h3>
+        <p>US CPI came in lower than forecast → bullish for risk assets.</p>
+      </div>
+      <div class="card">
+        <h3>BTC Outlook</h3>
+        <p>BTC testing resistance at $48k, breakout could target $50k.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="services">
+    <h2>Services</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>Account Management</h3>
+        <p>Professional handling with strict risk rules.</p>
+      </div>
+      <div class="card">
+        <h3>Copy Trading</h3>
+        <p>Follow trades with full transparency.</p>
+      </div>
+      <div class="card">
+        <h3>Mentorship</h3>
+        <p>1-on-1 sessions on strategy & psychology.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2>Contact</h2>
+    <form id="contactForm" class="card">
+      <input type="text" placeholder="Your Name" required><br><br>
+      <input type="email" placeholder="Your Email" required><br><br>
+      <textarea placeholder="Message" required></textarea><br><br>
+      <button type="submit" class="btn">Send</button>
+    </form>
+    <div style="margin-top:1rem;">
+      <a href="https://wa.me/000000000" class="btn"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+      <a href="https://t.me/demo" class="btn"><i class="fa-brands fa-telegram"></i> Telegram</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 MyTrading – This is not financial advice.</p>
   </footer>
 
-  <!-- Modal: Add Setup -->
-  <div class="overlay" id="overlay-setup">
-    <div class="modal">
-      <h3>Add Trade Setup</h3>
-      <div class="row">
-        <select id="m-asset">
-          <option>BTC</option><option>ETH</option><option>GOLD</option><option>SPX</option><option>ALT</option>
-        </select>
-        <select id="m-type">
-          <option>Long</option><option>Short</option><option>Spot</option><option>Futures</option>
-        </select>
-      </div>
-      <div class="row">
-        <input id="m-entry" class="input" placeholder="Entry" type="number" />
-        <input id="m-tp" class="input" placeholder="TP" type="number" />
-        <input id="m-sl" class="input" placeholder="SL" type="number" />
-      </div>
-      <div class="row">
-        <input id="m-date" class="input" type="date" />
-        <select id="m-result"><option>Open</option><option>Win</option><option>Loss</option><option>BE</option></select>
-      </div>
-      <div class="row">
-        <button class="btn" id="btn-cancel-setup">Cancel</button>
-        <button class="btn primary" id="btn-save-setup">Save</button>
-      </div>
-    </div>
-  </div>
+  <script>
+    const toggleBtn = document.querySelector('.toggle-theme');
+    toggleBtn.addEventListener('click', ()=>{
+      document.body.classList.toggle('dark');
+    });
 
-  <!-- Modal: New Post -->
-  <div class="overlay" id="overlay-post">
-    <div class="modal">
-      <h3>New Analysis Post</h3>
-      <input id="p-title" class="input" placeholder="Title" />
-      <div class="row">
-        <select id="p-tag"><option>macro</option><option>btc</option><option>eth</option><option>gold</option><option>spx</option></select>
-        <input id="p-date" class="input" type="date" />
-      </div>
-      <textarea id="p-body" class="input" rows="6" placeholder="Write your analysis..."></textarea>
-      <div class="row">
-        <button class="btn" id="btn-cancel-post">Cancel</button>
-        <button class="btn primary" id="btn-save-post">Publish</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- TradingView Lightweight Widget -->
-  <script src="https://s3.tradingview.com/tv.js"></script>
-
-  <!-- Firebase SDKs (v9 modular) -->
-  <script type="module">
-    /************************************
-     * 🔧 1) Firebase Setup (Replace!)  *
-     ************************************/
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
-    import { getFirestore, collection, addDoc, getDocs, query, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
-    // Optional Auth
-    import { getAuth, onAuthStateChanged, signInAnonymously } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
-
+    // Firebase placeholder – replace with your config
     const firebaseConfig = {
       apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      authDomain: "YOUR_DOMAIN",
       projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
     };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-    signInAnonymously(auth).catch(console.error);
-
-    /*******************************************
-     * 📈 2) Live Price Ticker (CoinGecko API) *
-     *******************************************/
-    const tickerRow = document.getElementById('tickerRow');
-    async function loadPrices(){
-      try{
-        const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd');
-        const data = await res.json();
-        const extra = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT').then(r=>r.json()).catch(()=>({price:data.bitcoin?.usd}))
-        const items=[
-          {sym:'BTC', price: Number(extra.price)||data.bitcoin.usd, change:null},
-          {sym:'ETH', price: data.ethereum.usd, change:null},
-        ];
-        tickerRow.innerHTML = items.map(i=>`<div class="chip ${i.change>0?'up': i.change<0?'down':''}"><span>${i.sym}</span><span class="price">$${Number(i.price).toLocaleString()}</span></div>`).join('');
-      }catch(e){
-        tickerRow.innerHTML = '<span class="muted">Price feed unavailable</span>';
-      }
-    }
-    loadPrices(); setInterval(loadPrices, 30000);
-
-    /***********************************
-     * 🧭 3) Simple SPA Navigation     *
-     ***********************************/
-    const links = document.querySelectorAll('.navlink');
-    const sections = document.querySelectorAll('main section');
-    function show(hash){
-      const id = (hash||'#home').replace('#','');
-      sections.forEach(s=>s.classList.toggle('active', s.id===id));
-      links.forEach(a=>a.classList.toggle('active', a.getAttribute('href')==='#'+id));
-      window.scrollTo({top:0,behavior:'smooth'});
-    }
-    window.addEventListener('hashchange',()=>show(location.hash));
-    show(location.hash);
-
-    /****************************************
-     * 🌓 4) Dark/Light Theme Toggle         *
-     ****************************************/
-    const root = document.documentElement;
-    const toggle = document.getElementById('darkToggle');
-    function setTheme(mode){ root.classList.toggle('light', mode==='light'); localStorage.setItem('theme', mode);}    
-    toggle.addEventListener('click',()=> setTheme(root.classList.contains('light')?'dark':'light'));
-    setTheme(localStorage.getItem('theme')||'dark');
-
-    /****************************************
-     * 🧾 5) Firestore Collections          *
-     * setups, performance, posts, messages, testimonials, newsletter
-     ****************************************/
-    const colSetups = collection(db,'setups');
-    const colPosts = collection(db,'posts');
-    const colPerf = collection(db,'performance');
-    const colMsgs = collection(db,'messages');
-    const colTestimonials = collection(db,'testimonials');
-    const colNewsletter = collection(db,'newsletter');
-
-    // 5a) Setups list + filters
-    const setupsTbody = document.querySelector('#setupsTable tbody');
-    const filtAsset = document.getElementById('filter-asset');
-    const filtType = document.getElementById('filter-type');
-    const filtDate = document.getElementById('filter-date');
-    document.getElementById('btn-clear-filters').onclick = ()=>{filtAsset.value='';filtType.value='';filtDate.value='';renderSetups(cacheSetups)}
-
-    let cacheSetups=[];
-    async function loadSetups(){
-      const qy = query(colSetups, orderBy('date','desc'));
-      onSnapshot(qy, snap=>{
-        cacheSetups = snap.docs.map(d=>({id:d.id, ...d.data()}));
-        renderSetups(cacheSetups);
-        renderLatestSignals(cacheSetups);
-      });
-    }
-    function renderSetups(list){
-      const fa=filtAsset.value, ft=filtType.value, fd=filtDate.value;
-      const rows = list.filter(x=>(!fa||x.asset===fa)&&(!ft||x.type===ft)&&(!fd||x.date===fd)).map(x=>`
-        <tr>
-          <td>${x.date||''}</td>
-          <td>${x.asset}</td>
-          <td>${x.type}</td>
-          <td>${x.entry}</td>
-          <td>${x.tp}</td>
-          <td>${x.sl}</td>
-          <td>${x.result||'Open'}</td>
-        </tr>`).join('');
-      setupsTbody.innerHTML = rows || `<tr><td colspan="7" class="muted">No setups yet.</td></tr>`;
-    }
-    function renderLatestSignals(list){
-      const body = document.querySelector('#latestSignalsTable tbody');
-      const rows = list.slice(0,5).map(x=>`<tr><td>${x.asset}</td><td>${x.type}</td><td>${x.entry}</td><td>${x.tp}</td><td>${x.sl}</td><td>${x.result||'Open'}</td></tr>`).join('');
-      body.innerHTML = rows || `<tr><td colspan="6" class="muted">No signals yet.</td></tr>`
-    }
-
-    // Add Setup (modal)
-    const overlaySetup=document.getElementById('overlay-setup');
-    document.getElementById('btn-add-setup').onclick=()=>overlaySetup.classList.add('active');
-    document.getElementById('btn-cancel-setup').onclick=()=>overlaySetup.classList.remove('active');
-    document.getElementById('btn-save-setup').onclick=async ()=>{
-      const docData={
-        asset: document.getElementById('m-asset').value,
-        type: document.getElementById('m-type').value,
-        entry: Number(document.getElementById('m-entry').value),
-        tp: Number(document.getElementById('m-tp').value),
-        sl: Number(document.getElementById('m-sl').value),
-        date: document.getElementById('m-date').value || new Date().toISOString().slice(0,10),
-        result: document.getElementById('m-result').value
-      };
-      await addDoc(colSetups, docData);
-      overlaySetup.classList.remove('active');
-    }
-
-    // 5b) Performance KPIs (expect one latest doc in performance)
-    async function loadPerformance(){
-      const snap = await getDocs(colPerf);
-      const items = snap.docs.map(d=>d.data());
-      const latest = items[0];
-      const acc = latest?.accuracy ?? null;
-      const wins = latest?.wins ?? null;
-      const losses = latest?.losses ?? null;
-      const monthAcc = latest?.monthAccuracy ?? null;
-      document.getElementById('kpi-accuracy').textContent = acc? acc+"%":"—%";
-      document.getElementById('kpi-30d').textContent = monthAcc? monthAcc+"%":"—%";
-      document.getElementById('perf-accuracy').textContent = acc? acc+"%":"—%";
-      document.getElementById('perf-wins').textContent = wins??'—';
-      document.getElementById('perf-losses').textContent = losses??'—';
-      document.getElementById('perf-month').textContent = monthAcc? monthAcc+"%":"—%";
-
-      // Monthly table (optional structure: performance/monthly array)
-      const monthly = latest?.monthly || [];
-      const mtbody = document.querySelector('#monthlyTable tbody');
-      mtbody.innerHTML = monthly.map(m=>`<tr><td>${m.month}</td><td>${m.trades}</td><td>${m.wins}</td><td>${m.losses}</td><td>${m.accuracy}%</td></tr>`).join('');
-    }
-
-    // 5c) Posts (analysis)
-    const postsList = document.getElementById('postsList');
-    function renderPosts(list){
-      postsList.innerHTML = list.map(p=>`
-        <div class="card">
-          <div class="badge">${p.tag.toUpperCase()}</div>
-          <h3>${p.title}</h3>
-          <div class="muted" style="font-size:12px">${p.date||''}</div>
-          <p>${(p.body||'').slice(0,220)}${(p.body||'').length>220?'…':''}</p>
-        </div>`).join('');
-    }
-    async function loadPosts(){
-      const qy = query(colPosts, orderBy('date','desc'));
-      onSnapshot(qy, snap=>{
-        const list = snap.docs.map(d=>({id:d.id, ...d.data()}));
-        renderPosts(list);
-        // macro cards on home
-        const macro = list.filter(x=>x.tag==='macro').slice(0,6);
-        document.getElementById('macroList').innerHTML = macro.map(m=>`<li>${m.date||''} — ${m.title}</li>`).join('');
-      });
-    }
-
-    // Add Post (modal)
-    const overlayPost=document.getElementById('overlay-post');
-    document.getElementById('btn-add-post').onclick=()=>overlayPost.classList.add('active');
-    document.getElementById('btn-cancel-post').onclick=()=>overlayPost.classList.remove('active');
-    document.getElementById('btn-save-post').onclick=async ()=>{
-      const docData={
-        title: document.getElementById('p-title').value,
-        tag: document.getElementById('p-tag').value,
-        date: document.getElementById('p-date').value || new Date().toISOString().slice(0,10),
-        body: document.getElementById('p-body').value
-      };
-      await addDoc(colPosts, docData);
-      overlayPost.classList.remove('active');
-    }
-
-    // 5d) Messages (Contact)
-    document.getElementById('btn-send').onclick = async ()=>{
-      const name = (document.getElementById('c-name').value||'').trim();
-      const email = (document.getElementById('c-email').value||'').trim();
-      const message = (document.getElementById('c-message').value||'').trim();
-      if(!name || !email || !message){ alert('Fill all fields'); return; }
-      await addDoc(colMsgs, {name,email,message,ts:Date.now()});
-      alert('Message sent!');
-      document.getElementById('c-name').value='';
-      document.getElementById('c-email').value='';
-      document.getElementById('c-message').value='';
-    }
-
-    // 5e) Newsletter
-    document.getElementById('btn-subscribe').onclick = async ()=>{
-      const email = (document.getElementById('n-email').value||'').trim();
-      if(!email){ alert('Enter email'); return; }
-      await addDoc(colNewsletter, {email, ts:Date.now()});
-      alert('Subscribed!');
-      document.getElementById('n-email').value='';
-    }
-
-    // 5f) Testimonials
-    async function loadTestimonials(){
-      const snap = await getDocs(colTestimonials);
-      const list = snap.docs.map(d=>d.data());
-      document.getElementById('testimonials').innerHTML = list.map(t=>`
-        <div class="card"><p>“${t.text}”</p><div class="muted">— ${t.name}</div></div>`).join('');
-    }
-
-    /****************************************
-     * 🧩 6) TradingView Widget Embeds      *
-     ****************************************/
-    function mountTV(containerId, symbol){
-      // eslint-disable-next-line no-undef
-      new TradingView.widget({
-        autosize: true,
-        symbol: symbol,
-        interval: "60",
-        timezone: "Etc/UTC",
-        theme: root.classList.contains('light')? 'light':'dark',
-        style: "1",
-        locale: "en",
-        toolbar_bg: "rgba(0, 0, 0, 0)",
-        enable_publishing: false,
-        allow_symbol_change: true,
-        container_id: containerId
-      });
-    }
-    function mountCharts(){
-      mountTV('tv-btc','BINANCE:BTCUSDT');
-      mountTV('tv-eth','BINANCE:ETHUSDT');
-      mountTV('tv-xau','OANDA:XAUUSD');
-      mountTV('tv-spx','SP:SPX');
-    }
-    mountCharts();
-
-    // Refresh charts when theme toggles
-    toggle.addEventListener('click', ()=>{ setTimeout(mountCharts, 200); });
-
-    /****************************************
-     * 🚀 7) Init                           *
-     ****************************************/
-    document.getElementById('year').textContent = new Date().getFullYear();
-    loadSetups();
-    loadPerformance();
-    loadPosts();
-    loadTestimonials();
   </script>
 </body>
 </html>
