@@ -1,777 +1,613 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trading Portfolio</title>
-    <!-- Tailwind CSS CDN for modern, responsive styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Custom styles for a cleaner look and feel, and font import */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        /* Custom scrollbar styling for a sleeker appearance */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background-color: #4a5568;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-track {
-            background-color: #2d3748;
-        }
-        /* Page content styling */
-        .page-content {
-            display: none;
-        }
-        .page-content.active {
-            display: block;
-        }
-        /* Dark mode colors */
-        .dark body {
-            background-color: #1a202c;
-            color: #e2e8f0;
-        }
-        .dark .bg-gray-100 {
-            background-color: #2d3748;
-        }
-        .dark .bg-white {
-            background-color: #1f2937;
-        }
-        .dark .bg-gray-200 {
-            background-color: #2a3340;
-        }
-        .dark .text-gray-900 {
-            color: #e2e8f0;
-        }
-        .dark .border-gray-300 {
-            border-color: #4a5568;
-        }
-        .dark .hover\:bg-gray-100:hover {
-            background-color: #2a3340;
-        }
-        /* TradingView widget container */
-        .tradingview-widget-container {
-            height: 400px;
-            width: 100%;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Areeb Ali Khan – Trading Portfolio</title>
+  <meta name="description" content="Crypto & Financial Markets – Setups, Performance, and Analysis. Not financial advice." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b0f17;
+      --bg-soft:#0f1522;
+      --card:#121a2a;
+      --text:#e6edf3;
+      --muted:#9fb0c3;
+      --accent:#3aa0ff;
+      --success:#1fbf75;
+      --danger:#ff5a5a;
+      --warning:#ffb020;
+      --shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    :root.light{
+      --bg:#f7f9fc; --bg-soft:#ffffff; --card:#ffffff; --text:#0c1420; --muted:#4b5b6c; --accent:#0a84ff; --success:#128f5a; --danger:#d93f3f; --warning:#b97800; --shadow: 0 10px 30px rgba(7,14,30,.08);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    a{color:var(--accent);text-decoration:none}
+    .container{width:100%;max-width:1200px;margin:0 auto;padding:0 16px}
+    header{position:sticky;top:0;z-index:50;background:rgba(10,14,24,.7);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.06)}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
+    .brand{display:flex;gap:10px;align-items:center}
+    .brand .logo{width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#7c4dff);display:grid;place-items:center;box-shadow:var(--shadow)}
+    .brand .logo span{font-weight:800}
+    .nav a{margin:0 10px;color:var(--text);opacity:.9}
+    .nav a.active{color:var(--accent)}
+    .right-actions{display:flex;align-items:center;gap:10px}
+    .btn{border:1px solid rgba(255,255,255,.12);background:var(--card);color:var(--text);padding:8px 12px;border-radius:12px;cursor:pointer;box-shadow:var(--shadow)}
+    .btn.primary{background:linear-gradient(135deg,var(--accent),#7c4dff);border:none}
+    .btn.ghost{background:transparent}
+
+    .ticker{border-top:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);background:var(--bg-soft)}
+    .ticker .row{display:flex;gap:18px;overflow:auto;padding:8px 0;scrollbar-width:none}
+    .chip{display:inline-flex;gap:8px;align-items:center;background:var(--card);padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.08)}
+    .chip .price{font-weight:700}
+    .chip.up{border-color:rgba(31,191,117,.3)}
+    .chip.down{border-color:rgba(255,90,90,.3)}
+
+    main{padding:32px 0}
+    section{display:none}
+    section.active{display:block}
+
+    .grid{display:grid;gap:16px}
+    .grid.cols-3{grid-template-columns:repeat(3,1fr)}
+    .grid.cols-2{grid-template-columns:repeat(2,1fr)}
+    @media(max-width:900px){.grid.cols-3{grid-template-columns:1fr}.grid.cols-2{grid-template-columns:1fr}}
+
+    .card{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:18px;padding:18px;box-shadow:var(--shadow)}
+    .card h3{margin:0 0 8px}
+    .muted{color:var(--muted)}
+    .kpi{display:flex;align-items:baseline;gap:6px;font-weight:800;font-size:28px}
+    .badge{font-size:12px;padding:4px 8px;border-radius:8px;border:1px solid rgba(255,255,255,.12)}
+
+    .table{width:100%;border-collapse:collapse}
+    .table th,.table td{padding:10px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left}
+    .table th{font-size:12px;letter-spacing:.02em;color:var(--muted)}
+    .table tr:hover{background:rgba(255,255,255,.02)}
+
+    .filters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px}
+    .input, select, textarea{width:100%;padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:transparent;color:var(--text)}
+    .row{display:flex;gap:12px}
+    .row > *{flex:1}
+
+    footer{margin:36px 0 18px;color:var(--muted);font-size:13px}
+    .tw{font-weight:700}
+
+    /* Modal */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:16px}
+    .overlay.active{display:flex}
+    .modal{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;max-width:640px;width:100%}
+  </style>
 </head>
-<body class="bg-gray-100 text-gray-900">
-
-    <!-- Header & Navigation -->
-    <header class="bg-white shadow-lg sticky top-0 z-50 rounded-b-xl">
-        <nav class="container mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between">
-            <a href="#" class="text-xl font-bold text-indigo-600 mb-4 md:mb-0">TradeVision</a>
-            <div class="space-x-4 md:space-x-8 text-sm font-medium">
-                <a href="#home" class="hover:text-indigo-600 transition duration-300" onclick="showPage('home')">Home</a>
-                <a href="#about" class="hover:text-indigo-600 transition duration-300" onclick="showPage('about')">About</a>
-                <a href="#portfolio" class="hover:text-indigo-600 transition duration-300" onclick="showPage('portfolio')">Portfolio</a>
-                <a href="#performance" class="hover:text-indigo-600 transition duration-300" onclick="showPage('performance')">Performance</a>
-                <a href="#analysis" class="hover:text-indigo-600 transition duration-300" onclick="showPage('analysis')">Analysis</a>
-                <a href="#services" class="hover:text-indigo-600 transition duration-300" onclick="showPage('services')">Services</a>
-                <a href="#contact" class="hover:text-indigo-600 transition duration-300" onclick="showPage('contact')">Contact</a>
-            </div>
-            <button id="darkModeToggle" class="mt-4 md:mt-0 px-4 py-2 bg-gray-200 rounded-full text-sm font-semibold hover:bg-gray-300 transition duration-300">
-                ☀️
-            </button>
-        </nav>
-    </header>
-
-    <!-- Main Content Container -->
-    <main class="container mx-auto px-4 py-8">
-
-        <!-- Home Page -->
-        <section id="home" class="page-content active space-y-12">
-            <div class="text-center py-16 bg-white rounded-2xl shadow-lg">
-                <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 mb-4 leading-tight">Your Vision, Our Strategy.</h1>
-                <p class="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">Mastering the markets, one trade at a time.</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
-                    <div class="p-6 bg-gray-100 rounded-xl shadow-md text-center">
-                        <h3 class="text-3xl font-bold text-green-500 mb-2" id="winRate">0%</h3>
-                        <p class="text-gray-600">Win Rate</p>
-                    </div>
-                    <div class="p-6 bg-gray-100 rounded-xl shadow-md text-center">
-                        <h3 class="text-3xl font-bold text-yellow-500 mb-2" id="accuracy">0%</h3>
-                        <p class="text-gray-600">Accuracy</p>
-                    </div>
-                    <div class="p-6 bg-gray-100 rounded-xl shadow-md text-center">
-                        <h3 class="text-3xl font-bold text-blue-500 mb-2" id="totalTrades">0</h3>
-                        <p class="text-gray-600">Total Trades</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Live Price Ticker Section -->
-            <div class="bg-white p-8 rounded-2xl shadow-lg">
-                <h2 class="text-2xl font-bold mb-6 text-gray-900">Live Market Data</h2>
-                <div id="priceTicker" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- Price cards will be dynamically inserted here -->
-                </div>
-                <div class="mt-8">
-                    <h3 class="text-xl font-bold mb-4 text-gray-900">Featured Charts</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="tradingview-widget-container rounded-xl overflow-hidden shadow-lg">
-                            <div class="tradingview-widget-container__widget"></div>
-                            <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">TradingView</span></a></div>
-                        </div>
-                        <div class="tradingview-widget-container rounded-xl overflow-hidden shadow-lg">
-                            <div class="tradingview-widget-container__widget"></div>
-                            <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/" rel="noopener nofollow" target="_blank"><span class="blue-text">TradingView</span></a></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Testimonials Section -->
-            <div class="bg-white p-8 rounded-2xl shadow-lg">
-                <h2 class="text-2xl font-bold mb-6 text-center text-gray-900">What Our Clients Say</h2>
-                <div id="testimonialsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Testimonial cards will be dynamically inserted here -->
-                </div>
-            </div>
-
-            <!-- Newsletter Signup Section -->
-            <div class="bg-white p-8 rounded-2xl shadow-lg text-center">
-                <h2 class="text-2xl font-bold mb-4 text-gray-900">Join Our Newsletter</h2>
-                <p class="text-gray-600 mb-6">Receive exclusive analysis and updates directly to your inbox.</p>
-                <form id="newsletterForm" class="max-w-md mx-auto flex flex-col sm:flex-row gap-4">
-                    <input type="email" id="newsletterEmail" placeholder="Enter your email" required class="flex-grow p-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    <button type="submit" class="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-full hover:bg-indigo-700 transition duration-300">Subscribe</button>
-                </form>
-            </div>
-        </section>
-
-        <!-- About Page -->
-        <section id="about" class="page-content space-y-8">
-            <div class="bg-white p-8 rounded-2xl shadow-lg">
-                <h2 class="text-3xl font-bold mb-4 text-gray-900">About the Trader</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                    <div class="w-full md:w-auto">
-                        <img src="https://placehold.co/400x400/2d3748/ffffff?text=Trader+Photo" alt="Trader Profile" class="rounded-xl shadow-lg w-full">
-                    </div>
-                    <div class="space-y-4 text-gray-600">
-                        <p>I'm a passionate and analytical trader with over a decade of experience in the financial markets. My journey began with a deep fascination for market psychology and quantitative analysis, leading me to pursue a degree in Financial Engineering.</p>
-                        <ul class="list-disc list-inside space-y-2">
-                            <li><strong>Education:</strong> B.S. in Financial Engineering, M.S. in Quantitative Finance.</li>
-                            <li><strong>Certifications:</strong> Chartered Financial Analyst (CFA) Level III, Certified Technical Analyst (CTA).</li>
-                            <li><strong>Trading Philosophy:</strong> I believe in a disciplined, data-driven approach. My strategy combines a top-down macroeconomic perspective with precise technical analysis to identify high-probability setups across various asset classes. Risk management is the cornerstone of my trading, ensuring capital preservation and sustainable growth.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Portfolio / Setups Page -->
-        <section id="portfolio" class="page-content space-y-8">
-            <div class="bg-white p-8 rounded-2xl shadow-lg">
-                <h2 class="text-3xl font-bold mb-6 text-gray-900">Trade Setups</h2>
-                <div class="flex flex-col md:flex-row gap-4 mb-8">
-                    <select id="portfolioFilterCoin" class="p-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <option value="all">All Coins</option>
-                        <option value="BTC">BTC</option>
-                        <option value="ETH">ETH</option>
-                        <option value="XAU">Gold (XAU)</option>
-                    </select>
-                    <input type="date" id="portfolioFilterDate" class="p-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    <select id="portfolioFilterResult" class="p-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <option value="all">All Results</option>
-                        <option value="Win">Win</option>
-                        <option value="Loss">Loss</option>
-                        <option value="Breakeven">Breakeven</option>
-                    </select>
-                </div>
-                <div id="setupsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Trade setup cards will be dynamically inserted here -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Performance / Accuracy Page -->
-        <section id="performance" class="page-content space-y-8">
-            <div class="bg-white p-8 rounded-2xl shadow-lg">
-                <h2 class="text-3xl font-bold mb-6 text-gray-900">Performance Metrics</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
-                    <div class="p-6 bg-gray-100 rounded-xl shadow-md">
-                        <h3 class="text-3xl font-bold text-green-500 mb-2" id="winLossRatio">0:0</h3>
-                        <p class="text-gray-600">Win/Loss Ratio</p>
-                    </div>
-                    <div class="p-6 bg-gray-100 rounded-xl shadow-md">
-                        <h3 class="text-3xl font-bold text-yellow-500 mb-2" id="accuracyPerformance">0%</h3>
-                        <p class="text-gray-600">Accuracy %</p>
-                    </div>
-                    <div class="p-6 bg-gray-100 rounded-xl shadow-md">
-                        <h3 class="text-3xl font-bold text-blue-500 mb-2" id="totalTradesPerformance">0</h3>
-                        <p class="text-gray-600">Total Trades</p>
-                    </div>
-                    <div class="p-6 bg-gray-100 rounded-xl shadow-md">
-                        <h3 class="text-3xl font-bold text-purple-500 mb-2" id="avgGainLoss">+0%</h3>
-                        <p class="text-gray-600">Avg Gain/Loss</p>
-                    </div>
-                </div>
-                <div class="mt-8">
-                    <h3 class="text-2xl font-bold mb-4 text-gray-900">Monthly Performance</h3>
-                    <div id="monthlyStatsContainer" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
-                        <!-- Monthly stats will be dynamically inserted here -->
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Economic & Market Analysis Section -->
-        <section id="analysis" class="page-content space-y-8">
-            <div class="bg-white p-8 rounded-2xl shadow-lg">
-                <h2 class="text-3xl font-bold mb-6 text-gray-900">Market Analysis</h2>
-                <div id="analysisContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Analysis posts will be dynamically inserted here -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Services Page -->
-        <section id="services" class="page-content space-y-8">
-            <div class="bg-white p-8 rounded-2xl shadow-lg">
-                <h2 class="text-3xl font-bold mb-6 text-gray-900">Our Services</h2>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <!-- Account Management Card -->
-                    <div class="bg-gray-100 p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300">
-                        <h3 class="text-2xl font-bold mb-2 text-indigo-600">Account Management</h3>
-                        <p class="text-gray-600 mb-4">Let our experts handle your trading account with a proven strategy and strict risk management.</p>
-                        <p class="text-sm text-gray-500">Terms & Conditions apply. Performance is not guaranteed. Past results are not indicative of future performance.</p>
-                    </div>
-                    <!-- Copy Trading Card -->
-                    <div class="bg-gray-100 p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300">
-                        <h3 class="text-2xl font-bold mb-2 text-indigo-600">Copy Trading</h3>
-                        <p class="text-gray-600 mb-4">Automatically replicate our trades in your own brokerage account. Seamless and secure.</p>
-                    </div>
-                    <!-- Mentorship Program Card -->
-                    <div class="bg-gray-100 p-6 rounded-xl shadow-md hover:shadow-lg transition duration-300">
-                        <h3 class="text-2xl font-bold mb-2 text-indigo-600">Mentorship Program</h3>
-                        <p class="text-gray-600 mb-4">Learn to trade like a professional. Our mentorship program provides one-on-one guidance and comprehensive training.</p>
-                    </div>
-                </div>
-            </div>
-            <!-- Affiliate Links Section -->
-            <div class="bg-white p-8 rounded-2xl shadow-lg">
-                <h2 class="text-2xl font-bold mb-4 text-gray-900">Recommended Brokers</h2>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <a href="#" class="flex items-center justify-center p-4 bg-gray-100 rounded-xl shadow-md hover:bg-gray-200 transition duration-300">
-                        <span class="text-xl font-bold text-gray-600">Broker A</span>
-                    </a>
-                    <a href="#" class="flex items-center justify-center p-4 bg-gray-100 rounded-xl shadow-md hover:bg-gray-200 transition duration-300">
-                        <span class="text-xl font-bold text-gray-600">Broker B</span>
-                    </a>
-                    <a href="#" class="flex items-center justify-center p-4 bg-gray-100 rounded-xl shadow-md hover:bg-gray-200 transition duration-300">
-                        <span class="text-xl font-bold text-gray-600">Broker C</span>
-                    </a>
-                    <a href="#" class="flex items-center justify-center p-4 bg-gray-100 rounded-xl shadow-md hover:bg-gray-200 transition duration-300">
-                        <span class="text-xl font-bold text-gray-600">Broker D</span>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Contact Page -->
-        <section id="contact" class="page-content space-y-8">
-            <div class="bg-white p-8 rounded-2xl shadow-lg">
-                <h2 class="text-3xl font-bold mb-6 text-gray-900">Get in Touch</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- Contact Form -->
-                    <div>
-                        <form id="contactForm" class="space-y-4">
-                            <div>
-                                <label for="contactName" class="block text-sm font-medium text-gray-700">Name</label>
-                                <input type="text" id="contactName" required class="mt-1 p-3 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            </div>
-                            <div>
-                                <label for="contactEmail" class="block text-sm font-medium text-gray-700">Email</label>
-                                <input type="email" id="contactEmail" required class="mt-1 p-3 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            </div>
-                            <div>
-                                <label for="contactMessage" class="block text-sm font-medium text-gray-700">Message</label>
-                                <textarea id="contactMessage" rows="4" required class="mt-1 p-3 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
-                            </div>
-                            <button type="submit" class="w-full py-3 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 transition duration-300">Send Message</button>
-                        </form>
-                    </div>
-                    <!-- Social Buttons -->
-                    <div class="space-y-4">
-                        <h3 class="text-xl font-bold text-gray-900">Or Connect via:</h3>
-                        <a href="#" class="w-full flex items-center justify-center py-3 bg-green-500 text-white font-semibold rounded-md hover:bg-green-600 transition duration-300">
-                            <span class="mr-2">📞</span>WhatsApp
-                        </a>
-                        <a href="#" class="w-full flex items-center justify-center py-3 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300">
-                            <span class="mr-2">✈️</span>Telegram
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Disclaimer & Footer -->
-    <footer class="bg-white py-8 mt-12 rounded-t-xl shadow-lg">
-        <div class="container mx-auto px-4 text-center text-sm text-gray-500 space-y-4">
-            <p class="font-bold text-red-600">Disclaimer</p>
-            <p>Risk Warning: Trading financial instruments carries a high level of risk and may not be suitable for all investors. The content on this website is for informational purposes only and does not constitute financial advice. Past performance is not indicative of future results.</p>
-            <p>&copy; 2024 TradeVision. All Rights Reserved.</p>
-            <p class="text-xs">User ID: <span id="userIdDisplay">Loading...</span></p>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="logo"><span>AA</span></div>
+        <div>
+          <div style="font-weight:800">Areeb Ali Khan</div>
+          <div class="muted" style="font-size:12px">Crypto & Markets Analyst</div>
         </div>
-    </footer>
+      </div>
+      <nav>
+        <a href="#home" class="navlink active">Home</a>
+        <a href="#about" class="navlink">About</a>
+        <a href="#portfolio" class="navlink">Setups</a>
+        <a href="#performance" class="navlink">Performance</a>
+        <a href="#analysis" class="navlink">Analysis</a>
+        <a href="#services" class="navlink">Services</a>
+        <a href="#contact" class="navlink">Contact</a>
+      </nav>
+      <div class="right-actions">
+        <button id="darkToggle" class="btn ghost" title="Toggle dark/light">🌓</button>
+        <a href="#newsletter" class="btn">Subscribe</a>
+      </div>
+    </div>
+    <div class="ticker">
+      <div class="container row" id="tickerRow">
+        <!-- live prices chips injected here -->
+      </div>
+    </div>
+  </header>
 
-    <!-- TradingView Widget Scripts -->
-    <script src="https://s3.tradingview.com/external-embedding/embed-widget-mini-chart.js" async></script>
-    <script>
-        new TradingView.widget(
-            {
-            "width": "100%",
-            "height": "100%",
-            "symbol": "BITSTAMP:BTCUSD",
-            "interval": "D",
-            "timezone": "Etc/UTC",
-            "theme": "dark",
-            "style": "2",
-            "locale": "en",
-            "enable_publishing": false,
-            "backgroundColor": "#1a202c",
-            "chartOnly": true
-            }
-        );
-        new TradingView.widget(
-            {
-            "width": "100%",
-            "height": "100%",
-            "symbol": "FX_IDC:XAUUSD",
-            "interval": "D",
-            "timezone": "Etc/UTC",
-            "theme": "dark",
-            "style": "2",
-            "locale": "en",
-            "enable_publishing": false,
-            "backgroundColor": "#1a202c",
-            "chartOnly": true
-            }
-        );
-    </script>
-    
-    <!-- Firebase SDKs -->
-    <script type="module">
-        // Firebase imports from CDN
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+  <main class="container">
+    <!-- HOME -->
+    <section id="home" class="active">
+      <div class="grid cols-3">
+        <div class="card">
+          <h2>Transparent Trading. Real Data.</h2>
+          <p class="muted">Setups, performance, and economic insights for BTC, ETH, Gold & S&P 500. <span class="badge">Not financial advice</span></p>
+          <div class="row">
+            <div class="card" style="flex:1">
+              <div class="muted">Overall Accuracy</div>
+              <div class="kpi" id="kpi-accuracy">—%</div>
+            </div>
+            <div class="card" style="flex:1">
+              <div class="muted">Last 30D Win Rate</div>
+              <div class="kpi" id="kpi-30d">—%</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Latest Signals</h3>
+          <table class="table" id="latestSignalsTable">
+            <thead>
+              <tr><th>Asset</th><th>Type</th><th>Entry</th><th>TP</th><th>SL</th><th>Status</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="card">
+          <h3>Upcoming Macro</h3>
+          <ul id="macroList" class="muted" style="line-height:1.8"></ul>
+          <div style="margin-top:8px" class="muted">CPI · FOMC · NFP
+            <div style="font-size:12px">(Add items in Firestore → <code>posts</code> with <em>tag: macro</em>)</div>
+          </div>
+        </div>
+      </div>
 
-        // Global variables provided by the canvas environment
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+      <div class="card" style="margin-top:16px">
+        <h3>Markets Overview</h3>
+        <div class="grid cols-2">
+          <div class="card">
+            <div class="muted">BTC / USDT</div>
+            <!-- TradingView Widget BTC -->
+            <div class="tv" id="tv-btc"></div>
+          </div>
+          <div class="card">
+            <div class="muted">ETH / USDT</div>
+            <div class="tv" id="tv-eth"></div>
+          </div>
+          <div class="card">
+            <div class="muted">GOLD (XAUUSD)</div>
+            <div class="tv" id="tv-xau"></div>
+          </div>
+          <div class="card">
+            <div class="muted">S&P 500 (SPX)</div>
+            <div class="tv" id="tv-spx"></div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-        // Firebase Initialization
-        let app;
-        let db;
-        let auth;
-        let userId;
+    <!-- ABOUT -->
+    <section id="about">
+      <div class="grid cols-2">
+        <div class="card">
+          <h3>About Me</h3>
+          <p>Hi, I’m <span class="tw">Areeb Ali Khan</span> — Crypto & Financial Markets analyst. I combine Technical Analysis (TA) and Fundamental Analysis (FA) around macro events like CPI, FOMC and NFP. ACCA in progress → CFA later. Sharing real setups, transparent results.</p>
+          <ul class="muted">
+            <li>Education: ACCA (ongoing), Expert of Blockchain (Coursera)</li>
+            <li>Focus: BTC & ETH, majors, Gold, S&P 500</li>
+            <li>Tools: TA + macro + data-driven backtests</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Philosophy</h3>
+          <p class="muted">Risk first. Clarity over noise. Document everything. No cherry-picking — both wins and losses are posted.</p>
+          <div class="badge">Transparency</div> <div class="badge">Discipline</div> <div class="badge">Evidence</div>
+        </div>
+      </div>
+    </section>
 
-        // Function to safely initialize Firebase
-        async function initializeFirebase() {
-            try {
-                if (Object.keys(firebaseConfig).length > 0) {
-                    app = initializeApp(firebaseConfig);
-                    db = getFirestore(app);
-                    auth = getAuth(app);
-                    console.log("Firebase initialized successfully.");
+    <!-- SETUPS / PORTFOLIO -->
+    <section id="portfolio">
+      <div class="card">
+        <h3>Trade Setups</h3>
+        <div class="filters">
+          <select id="filter-asset"><option value="">All Assets</option><option>BTC</option><option>ETH</option><option>GOLD</option><option>SPX</option><option>ALT</option></select>
+          <select id="filter-type"><option value="">All Types</option><option>Long</option><option>Short</option><option>Spot</option><option>Futures</option></select>
+          <input id="filter-date" class="input" type="date" />
+          <button class="btn" id="btn-clear-filters">Clear Filters</button>
+          <button class="btn primary" id="btn-add-setup">+ Add Setup</button>
+        </div>
+        <table class="table" id="setupsTable">
+          <thead>
+            <tr><th>Date</th><th>Asset</th><th>Type</th><th>Entry</th><th>TP</th><th>SL</th><th>Result</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
 
-                    // Listen for authentication state changes
-                    onAuthStateChanged(auth, async (user) => {
-                        if (user) {
-                            userId = user.uid;
-                            console.log("User is signed in with UID:", userId);
-                            document.getElementById('userIdDisplay').textContent = userId;
-                            
-                            // Once authenticated, fetch data
-                            await Promise.all([
-                                fetchPerformanceData(),
-                                fetchTradeSetups(),
-                                fetchMarketAnalysis(),
-                                fetchTestimonials()
-                            ]);
-                        } else {
-                            console.log("User is signed out.");
-                            // Sign in anonymously if no auth token is provided or after sign-out
-                            if (!initialAuthToken) {
-                                await signInAnonymously(auth);
-                            }
-                        }
-                    });
+    <!-- PERFORMANCE -->
+    <section id="performance">
+      <div class="grid cols-3">
+        <div class="card">
+          <div class="muted">Overall Accuracy</div>
+          <div class="kpi" id="perf-accuracy">—%</div>
+        </div>
+        <div class="card">
+          <div class="muted">Win / Loss</div>
+          <div class="kpi"><span id="perf-wins">—</span>/<span id="perf-losses">—</span></div>
+        </div>
+        <div class="card">
+          <div class="muted">This Month</div>
+          <div class="kpi" id="perf-month">—%</div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <h3>Monthly Stats</h3>
+        <table class="table" id="monthlyTable">
+          <thead><tr><th>Month</th><th>Trades</th><th>Wins</th><th>Losses</th><th>Accuracy</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
 
-                    // Sign in with the custom token if available
-                    if (initialAuthToken) {
-                        await signInWithCustomToken(auth, initialAuthToken);
-                        console.log("Signed in with custom token.");
-                    } else {
-                        // Or sign in anonymously as a fallback
-                        await signInAnonymously(auth);
-                        console.log("Signed in anonymously.");
-                    }
+    <!-- ANALYSIS -->
+    <section id="analysis">
+      <div class="card">
+        <h3>Economic & Market Analysis</h3>
+        <button class="btn" id="btn-add-post">+ New Post</button>
+        <div id="postsList" class="grid cols-2" style="margin-top:12px"></div>
+      </div>
+    </section>
 
-                } else {
-                    console.error("Firebase config is missing. Firestore operations will not work.");
-                    // Set mock user ID if Firebase isn't available
-                    userId = 'mock-user-' + Math.random().toString(36).substr(2, 9);
-                    document.getElementById('userIdDisplay').textContent = userId + ' (Mock)';
-                    // Fetch mock data instead
-                    fetchMockData();
-                }
-            } catch (error) {
-                console.error("Error during Firebase initialization or sign-in:", error);
-                // Set mock user ID on error
-                userId = 'mock-user-' + Math.random().toString(36).substr(2, 9);
-                document.getElementById('userIdDisplay').textContent = userId + ' (Mock)';
-                fetchMockData();
-            }
-        }
+    <!-- SERVICES -->
+    <section id="services">
+      <div class="grid cols-2">
+        <div class="card">
+          <h3>Services</h3>
+          <ul style="line-height:1.9">
+            <li><b>Account Management</b> – clear risk limits and terms.</li>
+            <li><b>Copy Trading</b> – details & exchange links.</li>
+            <li><b>Mentorship</b> – structured curriculum.</li>
+            <li><b>Affiliates</b> – transparent disclosures.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Testimonials</h3>
+          <div id="testimonials" class="grid cols-2"></div>
+        </div>
+      </div>
+    </section>
 
-        // --- Data Fetching and Display Functions ---
+    <!-- CONTACT -->
+    <section id="contact">
+      <div class="grid cols-2">
+        <div class="card">
+          <h3>Contact</h3>
+          <div class="row">
+            <input id="c-name" class="input" placeholder="Name" />
+            <input id="c-email" class="input" placeholder="Email" type="email" />
+          </div>
+          <textarea id="c-message" class="input" rows="5" placeholder="Your message"></textarea>
+          <div class="row">
+            <button class="btn primary" id="btn-send">Send</button>
+            <a class="btn" href="https://wa.me/" target="_blank">WhatsApp</a>
+            <a class="btn" href="https://t.me/" target="_blank">Telegram</a>
+          </div>
+        </div>
+        <div class="card" id="newsletter">
+          <h3>Newsletter</h3>
+          <p class="muted">Get weekly market outlooks in your inbox.</p>
+          <div class="row">
+            <input id="n-email" class="input" placeholder="Your email" type="email" />
+            <button class="btn" id="btn-subscribe">Subscribe</button>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <h3>Disclaimer</h3>
+        <p class="muted">All content is for educational purposes only and does not constitute financial advice. Trading involves risk. Do your own research.</p>
+      </div>
+    </section>
+  </main>
 
-        // Fetches and displays performance data from Firestore
-        async function fetchPerformanceData() {
-            if (!db || !userId) return;
-            try {
-                const docRef = doc(db, `/artifacts/${appId}/public/data/performance/`, "summary");
-                onSnapshot(docRef, (docSnap) => {
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        document.getElementById('winRate').textContent = `${(data.winRate * 100).toFixed(0)}%`;
-                        document.getElementById('accuracy').textContent = `${(data.accuracy * 100).toFixed(0)}%`;
-                        document.getElementById('totalTrades').textContent = data.totalTrades;
-                        document.getElementById('winLossRatio').textContent = `${data.wins}:${data.losses}`;
-                        document.getElementById('accuracyPerformance').textContent = `${(data.accuracy * 100).toFixed(0)}%`;
-                        document.getElementById('totalTradesPerformance').textContent = data.totalTrades;
-                        document.getElementById('avgGainLoss').textContent = `${data.avgGainLoss > 0 ? '+' : ''}${(data.avgGainLoss * 100).toFixed(2)}%`;
+  <footer class="container">
+    © <span id="year"></span> Areeb Ali Khan · All rights reserved
+  </footer>
 
-                        const monthlyContainer = document.getElementById('monthlyStatsContainer');
-                        monthlyContainer.innerHTML = '';
-                        // Sort months to ensure correct display order
-                        const sortedMonths = Object.keys(data.monthlyStats).sort();
-                        sortedMonths.forEach(month => {
-                            const monthData = data.monthlyStats[month];
-                            const card = `
-                                <div class="p-4 bg-gray-100 rounded-xl shadow-md text-center">
-                                    <h4 class="text-lg font-semibold text-gray-800">${month}</h4>
-                                    <p class="text-sm text-gray-600">Trades: ${monthData.totalTrades}</p>
-                                    <p class="text-sm font-bold ${monthData.netGainLoss > 0 ? 'text-green-500' : 'text-red-500'}">${(monthData.netGainLoss * 100).toFixed(2)}%</p>
-                                </div>
-                            `;
-                            monthlyContainer.innerHTML += card;
-                        });
-                    }
-                }, (error) => {
-                    console.error("Error fetching performance data:", error);
-                });
-            } catch (error) {
-                console.error("Error setting up performance data listener:", error);
-            }
-        }
+  <!-- Modal: Add Setup -->
+  <div class="overlay" id="overlay-setup">
+    <div class="modal">
+      <h3>Add Trade Setup</h3>
+      <div class="row">
+        <select id="m-asset">
+          <option>BTC</option><option>ETH</option><option>GOLD</option><option>SPX</option><option>ALT</option>
+        </select>
+        <select id="m-type">
+          <option>Long</option><option>Short</option><option>Spot</option><option>Futures</option>
+        </select>
+      </div>
+      <div class="row">
+        <input id="m-entry" class="input" placeholder="Entry" type="number" />
+        <input id="m-tp" class="input" placeholder="TP" type="number" />
+        <input id="m-sl" class="input" placeholder="SL" type="number" />
+      </div>
+      <div class="row">
+        <input id="m-date" class="input" type="date" />
+        <select id="m-result"><option>Open</option><option>Win</option><option>Loss</option><option>BE</option></select>
+      </div>
+      <div class="row">
+        <button class="btn" id="btn-cancel-setup">Cancel</button>
+        <button class="btn primary" id="btn-save-setup">Save</button>
+      </div>
+    </div>
+  </div>
 
-        // Fetches and displays trade setups from Firestore
-        async function fetchTradeSetups() {
-            if (!db || !userId) return;
-            try {
-                const q = query(collection(db, `/artifacts/${appId}/public/data/setups/`));
-                onSnapshot(q, (querySnapshot) => {
-                    const setups = [];
-                    querySnapshot.forEach((doc) => {
-                        setups.push({ id: doc.id, ...doc.data() });
-                    });
-                    renderTradeSetups(setups);
-                }, (error) => {
-                    console.error("Error fetching trade setups:", error);
-                });
-            } catch (error) {
-                console.error("Error setting up trade setups listener:", error);
-            }
-        }
+  <!-- Modal: New Post -->
+  <div class="overlay" id="overlay-post">
+    <div class="modal">
+      <h3>New Analysis Post</h3>
+      <input id="p-title" class="input" placeholder="Title" />
+      <div class="row">
+        <select id="p-tag"><option>macro</option><option>btc</option><option>eth</option><option>gold</option><option>spx</option></select>
+        <input id="p-date" class="input" type="date" />
+      </div>
+      <textarea id="p-body" class="input" rows="6" placeholder="Write your analysis..."></textarea>
+      <div class="row">
+        <button class="btn" id="btn-cancel-post">Cancel</button>
+        <button class="btn primary" id="btn-save-post">Publish</button>
+      </div>
+    </div>
+  </div>
 
-        // Fetches and displays market analysis posts from Firestore
-        async function fetchMarketAnalysis() {
-            if (!db || !userId) return;
-            try {
-                const q = query(collection(db, `/artifacts/${appId}/public/data/analysis/`));
-                onSnapshot(q, (querySnapshot) => {
-                    const posts = [];
-                    querySnapshot.forEach((doc) => {
-                        posts.push({ id: doc.id, ...doc.data() });
-                    });
-                    renderMarketAnalysis(posts);
-                }, (error) => {
-                    console.error("Error fetching market analysis:", error);
-                });
-            } catch (error) {
-                console.error("Error setting up market analysis listener:", error);
-            }
-        }
+  <!-- TradingView Lightweight Widget -->
+  <script src="https://s3.tradingview.com/tv.js"></script>
 
-        // Fetches and displays testimonials from Firestore
-        async function fetchTestimonials() {
-            if (!db || !userId) return;
-            try {
-                const q = query(collection(db, `/artifacts/${appId}/public/data/testimonials/`));
-                onSnapshot(q, (querySnapshot) => {
-                    const testimonials = [];
-                    querySnapshot.forEach((doc) => {
-                        testimonials.push({ id: doc.id, ...doc.data() });
-                    });
-                    renderTestimonials(testimonials);
-                }, (error) => {
-                    console.error("Error fetching testimonials:", error);
-                });
-            } catch (error) {
-                console.error("Error setting up testimonials listener:", error);
-            }
-        }
+  <!-- Firebase SDKs (v9 modular) -->
+  <script type="module">
+    /************************************
+     * 🔧 1) Firebase Setup (Replace!)  *
+     ************************************/
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy, onSnapshot } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+    // Optional Auth
+    import { getAuth, onAuthStateChanged, signInAnonymously } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
 
-        // --- Data Rendering Functions ---
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
 
-        function renderTradeSetups(setups) {
-            const container = document.getElementById('setupsContainer');
-            container.innerHTML = ''; // Clear previous content
-            setups.forEach(setup => {
-                const resultColor = setup.result === 'Win' ? 'bg-green-500' : setup.result === 'Loss' ? 'bg-red-500' : 'bg-gray-500';
-                const card = `
-                    <div class="bg-gray-100 p-6 rounded-xl shadow-md">
-                        <img src="${setup.chartUrl}" alt="Trade Chart" class="rounded-lg mb-4">
-                        <h4 class="text-xl font-semibold mb-2 text-gray-900">${setup.asset} - ${setup.date}</h4>
-                        <div class="flex items-center mb-4">
-                            <span class="px-3 py-1 text-xs font-bold text-white rounded-full ${resultColor}">${setup.result}</span>
-                        </div>
-                        <p class="text-gray-600"><strong>Entry:</strong> ${setup.entry}</p>
-                        <p class="text-gray-600"><strong>TP:</strong> ${setup.tp}</p>
-                        <p class="text-gray-600"><strong>SL:</strong> ${setup.sl}</p>
-                    </div>
-                `;
-                container.innerHTML += card;
-            });
-        }
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    signInAnonymously(auth).catch(console.error);
 
-        function renderMarketAnalysis(posts) {
-            const container = document.getElementById('analysisContainer');
-            container.innerHTML = '';
-            posts.forEach(post => {
-                const card = `
-                    <div class="bg-gray-100 p-6 rounded-xl shadow-md">
-                        <h4 class="text-xl font-bold mb-2 text-gray-900">${post.title}</h4>
-                        <p class="text-sm text-gray-500 mb-4">${post.date}</p>
-                        <p class="text-gray-600">${post.summary}</p>
-                        <button class="mt-4 text-indigo-600 font-semibold hover:text-indigo-700">Read More</button>
-                    </div>
-                `;
-                container.innerHTML += card;
-            });
-        }
+    /*******************************************
+     * 📈 2) Live Price Ticker (CoinGecko API) *
+     *******************************************/
+    const tickerRow = document.getElementById('tickerRow');
+    async function loadPrices(){
+      try{
+        const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd');
+        const data = await res.json();
+        const extra = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT').then(r=>r.json()).catch(()=>({price:data.bitcoin?.usd}))
+        const items=[
+          {sym:'BTC', price: Number(extra.price)||data.bitcoin.usd, change:null},
+          {sym:'ETH', price: data.ethereum.usd, change:null},
+        ];
+        tickerRow.innerHTML = items.map(i=>`<div class="chip ${i.change>0?'up': i.change<0?'down':''}"><span>${i.sym}</span><span class="price">$${Number(i.price).toLocaleString()}</span></div>`).join('');
+      }catch(e){
+        tickerRow.innerHTML = '<span class="muted">Price feed unavailable</span>';
+      }
+    }
+    loadPrices(); setInterval(loadPrices, 30000);
 
-        function renderTestimonials(testimonials) {
-            const container = document.getElementById('testimonialsContainer');
-            container.innerHTML = '';
-            testimonials.forEach(testimonial => {
-                const card = `
-                    <div class="bg-gray-100 p-6 rounded-xl shadow-md space-y-4">
-                        <p class="text-gray-600 italic">"${testimonial.message}"</p>
-                        <p class="font-semibold text-right text-gray-800">- ${testimonial.author}</p>
-                    </div>
-                `;
-                container.innerHTML += card;
-            });
-        }
+    /***********************************
+     * 🧭 3) Simple SPA Navigation     *
+     ***********************************/
+    const links = document.querySelectorAll('.navlink');
+    const sections = document.querySelectorAll('main section');
+    function show(hash){
+      const id = (hash||'#home').replace('#','');
+      sections.forEach(s=>s.classList.toggle('active', s.id===id));
+      links.forEach(a=>a.classList.toggle('active', a.getAttribute('href')==='#'+id));
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+    window.addEventListener('hashchange',()=>show(location.hash));
+    show(location.hash);
 
-        // --- Mock Data Functions (if Firebase is not available) ---
-        function fetchMockData() {
-            console.log("Using mock data as Firebase config is not available.");
-            // Mock Performance Data
-            const mockPerformance = {
-                winRate: 0.75,
-                accuracy: 0.82,
-                totalTrades: 125,
-                wins: 94,
-                losses: 31,
-                avgGainLoss: 0.15,
-                monthlyStats: {
-                    'Jan 2024': { totalTrades: 20, netGainLoss: 0.15 },
-                    'Feb 2024': { totalTrades: 18, netGainLoss: 0.12 },
-                    'Mar 2024': { totalTrades: 25, netGainLoss: 0.21 },
-                    'Apr 2024': { totalTrades: 30, netGainLoss: 0.25 },
-                    'May 2024': { totalTrades: 15, netGainLoss: 0.08 },
-                    'Jun 2024': { totalTrades: 17, netGainLoss: 0.18 }
-                }
-            };
-            // Mock a listener-like behavior
-            setTimeout(() => {
-                document.getElementById('winRate').textContent = `${(mockPerformance.winRate * 100).toFixed(0)}%`;
-                document.getElementById('accuracy').textContent = `${(mockPerformance.accuracy * 100).toFixed(0)}%`;
-                document.getElementById('totalTrades').textContent = mockPerformance.totalTrades;
-                document.getElementById('winLossRatio').textContent = `${mockPerformance.wins}:${mockPerformance.losses}`;
-                document.getElementById('accuracyPerformance').textContent = `${(mockPerformance.accuracy * 100).toFixed(0)}%`;
-                document.getElementById('totalTradesPerformance').textContent = mockPerformance.totalTrades;
-                document.getElementById('avgGainLoss').textContent = `${mockPerformance.avgGainLoss > 0 ? '+' : ''}${(mockPerformance.avgGainLoss * 100).toFixed(2)}%`;
-                const monthlyContainer = document.getElementById('monthlyStatsContainer');
-                monthlyContainer.innerHTML = '';
-                const sortedMonths = Object.keys(mockPerformance.monthlyStats).sort();
-                sortedMonths.forEach(month => {
-                    const monthData = mockPerformance.monthlyStats[month];
-                    const card = `
-                        <div class="p-4 bg-gray-100 rounded-xl shadow-md text-center">
-                            <h4 class="text-lg font-semibold text-gray-800">${month}</h4>
-                            <p class="text-sm text-gray-600">Trades: ${monthData.totalTrades}</p>
-                            <p class="text-sm font-bold ${monthData.netGainLoss > 0 ? 'text-green-500' : 'text-red-500'}">${(monthData.netGainLoss * 100).toFixed(2)}%</p>
-                        </div>
-                    `;
-                    monthlyContainer.innerHTML += card;
-                });
-            }, 1000);
+    /****************************************
+     * 🌓 4) Dark/Light Theme Toggle         *
+     ****************************************/
+    const root = document.documentElement;
+    const toggle = document.getElementById('darkToggle');
+    function setTheme(mode){ root.classList.toggle('light', mode==='light'); localStorage.setItem('theme', mode);}    
+    toggle.addEventListener('click',()=> setTheme(root.classList.contains('light')?'dark':'light'));
+    setTheme(localStorage.getItem('theme')||'dark');
 
-            // Mock Trade Setups
-            const mockSetups = [
-                { id: '1', asset: 'BTC', date: '2024-05-20', chartUrl: 'https://placehold.co/400x250/333/fff?text=BTC+Trade', entry: '65,000', tp: '68,500', sl: '64,000', result: 'Win' },
-                { id: '2', asset: 'ETH', date: '2024-05-18', chartUrl: 'https://placehold.co/400x250/333/fff?text=ETH+Trade', entry: '3,000', tp: '3,100', sl: '2,950', result: 'Loss' },
-                { id: '3', asset: 'XAU', date: '2024-05-15', chartUrl: 'https://placehold.co/400x250/333/fff?text=Gold+Trade', entry: '2,350', tp: '2,400', sl: '2,345', result: 'Win' }
-            ];
-            renderTradeSetups(mockSetups);
+    /****************************************
+     * 🧾 5) Firestore Collections          *
+     * setups, performance, posts, messages, testimonials, newsletter
+     ****************************************/
+    const colSetups = collection(db,'setups');
+    const colPosts = collection(db,'posts');
+    const colPerf = collection(db,'performance');
+    const colMsgs = collection(db,'messages');
+    const colTestimonials = collection(db,'testimonials');
+    const colNewsletter = collection(db,'newsletter');
 
-            // Mock Market Analysis
-            const mockAnalysis = [
-                { id: '1', title: 'CPI Report Impact on Markets', date: '2024-06-12', summary: 'The recent CPI data suggests a slowing down of inflation, potentially leading to a more dovish stance from the Fed. This could be bullish for risk assets.' },
-                { id: '2', title: 'FOMC Meeting Summary', date: '2024-06-05', summary: 'The Fed held rates steady, but their forward guidance indicates a data-dependent approach. Market participants are now pricing in potential rate cuts later this year.' }
-            ];
-            renderMarketAnalysis(mockAnalysis);
+    // 5a) Setups list + filters
+    const setupsTbody = document.querySelector('#setupsTable tbody');
+    const filtAsset = document.getElementById('filter-asset');
+    const filtType = document.getElementById('filter-type');
+    const filtDate = document.getElementById('filter-date');
+    document.getElementById('btn-clear-filters').onclick = ()=>{filtAsset.value='';filtType.value='';filtDate.value='';renderSetups(cacheSetups)}
 
-            // Mock Testimonials
-            const mockTestimonials = [
-                { id: '1', author: 'Jane Doe', message: 'The analysis provided is top-notch. I\'ve significantly improved my trading results by following the insights.' },
-                { id: '2', author: 'John Smith', message: 'Professional and transparent. The mentorship program was a game-changer for me. Highly recommended!' }
-            ];
-            renderTestimonials(mockTestimonials);
-        }
+    let cacheSetups=[];
+    async function loadSetups(){
+      const qy = query(colSetups, orderBy('date','desc'));
+      onSnapshot(qy, snap=>{
+        cacheSetups = snap.docs.map(d=>({id:d.id, ...d.data()}));
+        renderSetups(cacheSetups);
+        renderLatestSignals(cacheSetups);
+      });
+    }
+    function renderSetups(list){
+      const fa=filtAsset.value, ft=filtType.value, fd=filtDate.value;
+      const rows = list.filter(x=>(!fa||x.asset===fa)&&(!ft||x.type===ft)&&(!fd||x.date===fd)).map(x=>`
+        <tr>
+          <td>${x.date||''}</td>
+          <td>${x.asset}</td>
+          <td>${x.type}</td>
+          <td>${x.entry}</td>
+          <td>${x.tp}</td>
+          <td>${x.sl}</td>
+          <td>${x.result||'Open'}</td>
+        </tr>`).join('');
+      setupsTbody.innerHTML = rows || `<tr><td colspan="7" class="muted">No setups yet.</td></tr>`;
+    }
+    function renderLatestSignals(list){
+      const body = document.querySelector('#latestSignalsTable tbody');
+      const rows = list.slice(0,5).map(x=>`<tr><td>${x.asset}</td><td>${x.type}</td><td>${x.entry}</td><td>${x.tp}</td><td>${x.sl}</td><td>${x.result||'Open'}</td></tr>`).join('');
+      body.innerHTML = rows || `<tr><td colspan="6" class="muted">No signals yet.</td></tr>`
+    }
 
-        // --- Form Submission Handlers ---
+    // Add Setup (modal)
+    const overlaySetup=document.getElementById('overlay-setup');
+    document.getElementById('btn-add-setup').onclick=()=>overlaySetup.classList.add('active');
+    document.getElementById('btn-cancel-setup').onclick=()=>overlaySetup.classList.remove('active');
+    document.getElementById('btn-save-setup').onclick=async ()=>{
+      const docData={
+        asset: document.getElementById('m-asset').value,
+        type: document.getElementById('m-type').value,
+        entry: Number(document.getElementById('m-entry').value),
+        tp: Number(document.getElementById('m-tp').value),
+        sl: Number(document.getElementById('m-sl').value),
+        date: document.getElementById('m-date').value || new Date().toISOString().slice(0,10),
+        result: document.getElementById('m-result').value
+      };
+      await addDoc(colSetups, docData);
+      overlaySetup.classList.remove('active');
+    }
 
-        // Handle contact form submission
-        document.getElementById('contactForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('contactName').value;
-            const email = document.getElementById('contactEmail').value;
-            const message = document.getElementById('contactMessage').value;
+    // 5b) Performance KPIs (expect one latest doc in performance)
+    async function loadPerformance(){
+      const snap = await getDocs(colPerf);
+      const items = snap.docs.map(d=>d.data());
+      const latest = items[0];
+      const acc = latest?.accuracy ?? null;
+      const wins = latest?.wins ?? null;
+      const losses = latest?.losses ?? null;
+      const monthAcc = latest?.monthAccuracy ?? null;
+      document.getElementById('kpi-accuracy').textContent = acc? acc+"%":"—%";
+      document.getElementById('kpi-30d').textContent = monthAcc? monthAcc+"%":"—%";
+      document.getElementById('perf-accuracy').textContent = acc? acc+"%":"—%";
+      document.getElementById('perf-wins').textContent = wins??'—';
+      document.getElementById('perf-losses').textContent = losses??'—';
+      document.getElementById('perf-month').textContent = monthAcc? monthAcc+"%":"—%";
 
-            if (!db || !userId) {
-                console.error("Firebase not initialized. Cannot submit form.");
-                alert("Form submission failed. Firebase is not configured correctly.");
-                return;
-            }
+      // Monthly table (optional structure: performance/monthly array)
+      const monthly = latest?.monthly || [];
+      const mtbody = document.querySelector('#monthlyTable tbody');
+      mtbody.innerHTML = monthly.map(m=>`<tr><td>${m.month}</td><td>${m.trades}</td><td>${m.wins}</td><td>${m.losses}</td><td>${m.accuracy}%</td></tr>`).join('');
+    }
 
-            try {
-                await addDoc(collection(db, `/artifacts/${appId}/public/data/contacts/`), {
-                    name: name,
-                    email: email,
-                    message: message,
-                    timestamp: new Date()
-                });
-                alert("Message sent successfully!");
-                e.target.reset();
-            } catch (error) {
-                console.error("Error writing document:", error);
-                alert("Error sending message. Please try again.");
-            }
-        });
+    // 5c) Posts (analysis)
+    const postsList = document.getElementById('postsList');
+    function renderPosts(list){
+      postsList.innerHTML = list.map(p=>`
+        <div class="card">
+          <div class="badge">${p.tag.toUpperCase()}</div>
+          <h3>${p.title}</h3>
+          <div class="muted" style="font-size:12px">${p.date||''}</div>
+          <p>${(p.body||'').slice(0,220)}${(p.body||'').length>220?'…':''}</p>
+        </div>`).join('');
+    }
+    async function loadPosts(){
+      const qy = query(colPosts, orderBy('date','desc'));
+      onSnapshot(qy, snap=>{
+        const list = snap.docs.map(d=>({id:d.id, ...d.data()}));
+        renderPosts(list);
+        // macro cards on home
+        const macro = list.filter(x=>x.tag==='macro').slice(0,6);
+        document.getElementById('macroList').innerHTML = macro.map(m=>`<li>${m.date||''} — ${m.title}</li>`).join('');
+      });
+    }
 
-        // Handle newsletter form submission
-        document.getElementById('newsletterForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('newsletterEmail').value;
+    // Add Post (modal)
+    const overlayPost=document.getElementById('overlay-post');
+    document.getElementById('btn-add-post').onclick=()=>overlayPost.classList.add('active');
+    document.getElementById('btn-cancel-post').onclick=()=>overlayPost.classList.remove('active');
+    document.getElementById('btn-save-post').onclick=async ()=>{
+      const docData={
+        title: document.getElementById('p-title').value,
+        tag: document.getElementById('p-tag').value,
+        date: document.getElementById('p-date').value || new Date().toISOString().slice(0,10),
+        body: document.getElementById('p-body').value
+      };
+      await addDoc(colPosts, docData);
+      overlayPost.classList.remove('active');
+    }
 
-            if (!db || !userId) {
-                console.error("Firebase not initialized. Cannot submit form.");
-                alert("Subscription failed. Firebase is not configured correctly.");
-                return;
-            }
+    // 5d) Messages (Contact)
+    document.getElementById('btn-send').onclick = async ()=>{
+      const name = (document.getElementById('c-name').value||'').trim();
+      const email = (document.getElementById('c-email').value||'').trim();
+      const message = (document.getElementById('c-message').value||'').trim();
+      if(!name || !email || !message){ alert('Fill all fields'); return; }
+      await addDoc(colMsgs, {name,email,message,ts:Date.now()});
+      alert('Message sent!');
+      document.getElementById('c-name').value='';
+      document.getElementById('c-email').value='';
+      document.getElementById('c-message').value='';
+    }
 
-            try {
-                await addDoc(collection(db, `/artifacts/${appId}/public/data/newsletter/`), {
-                    email: email,
-                    timestamp: new Date()
-                });
-                alert("Thank you for subscribing!");
-                e.target.reset();
-            } catch (error) {
-                console.error("Error writing document:", error);
-                alert("Error subscribing. Please try again.");
-            }
-        });
+    // 5e) Newsletter
+    document.getElementById('btn-subscribe').onclick = async ()=>{
+      const email = (document.getElementById('n-email').value||'').trim();
+      if(!email){ alert('Enter email'); return; }
+      await addDoc(colNewsletter, {email, ts:Date.now()});
+      alert('Subscribed!');
+      document.getElementById('n-email').value='';
+    }
 
+    // 5f) Testimonials
+    async function loadTestimonials(){
+      const snap = await getDocs(colTestimonials);
+      const list = snap.docs.map(d=>d.data());
+      document.getElementById('testimonials').innerHTML = list.map(t=>`
+        <div class="card"><p>“${t.text}”</p><div class="muted">— ${t.name}</div></div>`).join('');
+    }
 
-        // --- UI Logic and Event Listeners ---
+    /****************************************
+     * 🧩 6) TradingView Widget Embeds      *
+     ****************************************/
+    function mountTV(containerId, symbol){
+      // eslint-disable-next-line no-undef
+      new TradingView.widget({
+        autosize: true,
+        symbol: symbol,
+        interval: "60",
+        timezone: "Etc/UTC",
+        theme: root.classList.contains('light')? 'light':'dark',
+        style: "1",
+        locale: "en",
+        toolbar_bg: "rgba(0, 0, 0, 0)",
+        enable_publishing: false,
+        allow_symbol_change: true,
+        container_id: containerId
+      });
+    }
+    function mountCharts(){
+      mountTV('tv-btc','BINANCE:BTCUSDT');
+      mountTV('tv-eth','BINANCE:ETHUSDT');
+      mountTV('tv-xau','OANDA:XAUUSD');
+      mountTV('tv-spx','SP:SPX');
+    }
+    mountCharts();
 
-        // Show/hide page content based on navigation
-        function showPage(pageId) {
-            document.querySelectorAll('.page-content').forEach(page => {
-                page.classList.remove('active');
-            });
-            document.getElementById(pageId).classList.add('active');
-        }
+    // Refresh charts when theme toggles
+    toggle.addEventListener('click', ()=>{ setTimeout(mountCharts, 200); });
 
-        // Dark mode toggle functionality
-        document.getElementById('darkModeToggle').addEventListener('click', () => {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            document.getElementById('darkModeToggle').textContent = isDark ? '🌙' : '☀️';
-            // Re-render TradingView widgets to match theme. A full reload is the easiest way.
-            location.reload();
-        });
-
-        // Set initial theme based on localStorage
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'light') {
-            document.documentElement.classList.remove('dark');
-            document.getElementById('darkModeToggle').textContent = '☀️';
-        }
-
-        // Fetch and display live price tickers (mock data)
-        function fetchLivePrices() {
-            const prices = {
-                'BTC/USD': (Math.random() * 1000 + 60000).toFixed(2),
-                'ETH/USD': (Math.random() * 50 + 3000).toFixed(2),
-                'XAU/USD': (Math.random() * 10 + 2300).toFixed(2),
-                'S&P 500': (Math.random() * 20 + 5200).toFixed(2),
-            };
-
-            const priceTickerContainer = document.getElementById('priceTicker');
-            priceTickerContainer.innerHTML = ''; // Clear previous content
-
-            for (const [symbol, price] of Object.entries(prices)) {
-                const isPositive = Math.random() > 0.5;
-                const change = (Math.random() * 0.5 + 0.1).toFixed(2);
-                const changeColor = isPositive ? 'text-green-500' : 'text-red-500';
-                const changeSign = isPositive ? '+' : '-';
-
-                const card = `
-                    <div class="p-4 bg-gray-100 rounded-xl shadow-md">
-                        <h4 class="text-lg font-bold text-gray-800 mb-1">${symbol}</h4>
-                        <p class="text-2xl font-bold">${price}</p>
-                        <p class="${changeColor} text-sm">${changeSign}${change}%</p>
-                    </div>
-                `;
-                priceTickerContainer.innerHTML += card;
-            }
-        }
-
-        // Initial setup on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            initializeFirebase();
-            showPage('home'); // Show the home page by default
-            fetchLivePrices();
-            setInterval(fetchLivePrices, 10000); // Update prices every 10 seconds
-        });
-    </script>
+    /****************************************
+     * 🚀 7) Init                           *
+     ****************************************/
+    document.getElementById('year').textContent = new Date().getFullYear();
+    loadSetups();
+    loadPerformance();
+    loadPosts();
+    loadTestimonials();
+  </script>
 </body>
 </html>
