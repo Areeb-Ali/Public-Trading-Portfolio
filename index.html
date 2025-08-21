@@ -1,174 +1,890 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trading Portfolio – Demo</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    :root {
-      --bg-light: #f9fafb;
-      --bg-dark: #0f172a;
-      --text-light: #0f172a;
-      --text-dark: #f9fafb;
-      --primary: #2563eb;
-      --card-bg: #ffffff;
-      --card-dark: #1e293b;
-    }
-    * {margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', sans-serif;}
-    body {background: var(--bg-light); color: var(--text-light); transition: all 0.3s ease;}
-    body.dark {background: var(--bg-dark); color: var(--text-dark);} 
-    header {padding:1rem 2rem; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; background:inherit; z-index:1000;}
-    header nav a {margin:0 1rem; text-decoration:none; color:inherit; font-weight:500;}
-    header nav a:hover {color:var(--primary);}
-    .toggle-theme {cursor:pointer;}
-    section {padding:4rem 2rem; max-width:1200px; margin:auto;}
-    h1,h2,h3 {margin-bottom:1rem;}
-    .hero {text-align:center; padding:5rem 2rem;}
-    .hero h1 {font-size:2.5rem; color:var(--primary);}
-    .cards {display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:1.5rem;}
-    .card {background:var(--card-bg); padding:1.5rem; border-radius:1rem; box-shadow:0 2px 8px rgba(0,0,0,0.05);} 
-    body.dark .card {background:var(--card-dark);}
-    .ticker {display:flex; gap:2rem; justify-content:center; margin:2rem 0;}
-    .ticker-item {font-size:1rem; font-weight:600;}
-    footer {text-align:center; padding:2rem; background:inherit;}
-    .btn {padding:0.5rem 1rem; border:none; border-radius:0.5rem; cursor:pointer; background:var(--primary); color:white;}
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pro Trading Portfolio – Demo</title>
+    <meta name="description"
+        content="Trading portfolio with setups, performance, and macro analysis. Not financial advice." />
+    <style>
+        /* =====================
+       THEME & TOKENS
+    ====================== */
+        :root {
+            --bg: #0b0f17;
+            --bg-alt: #0d1422;
+            --panel: rgba(255, 255, 255, 0.06);
+            --text: #e8eef6;
+            --muted: #9fb0c3;
+            --primary: #2b6cff;
+            /* blue */
+            --primary-2: #7c4dff;
+            /* violet */
+            --accent: #00d1ff;
+            --ring: rgba(43, 108, 255, .35);
+            --success: #16c784;
+            --danger: #ff5a5a;
+            --warn: #ffb020;
+            --radius: 18px;
+            --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none
+        }
+
+        /* Global gradient background with subtle grid */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background: radial-gradient(1200px 800px at 80% -10%, rgba(124, 77, 255, .25), transparent 60%),
+                radial-gradient(900px 700px at -10% 20%, rgba(43, 108, 255, .25), transparent 60%),
+                linear-gradient(180deg, var(--bg), var(--bg-alt));
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            opacity: .12;
+            pointer-events: none;
+            background-image: linear-gradient(transparent 0 23px, rgba(255, 255, 255, .06) 24px), linear-gradient(90deg, transparent 0 23px, rgba(255, 255, 255, .06) 24px);
+            background-size: 24px 24px;
+            mask-image: radial-gradient(1000px 600px at 50% 0%, black, transparent 70%);
+        }
+
+        /* =====================
+       HEADER / NAV
+    ====================== */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(14px);
+            background: rgba(8, 12, 20, .6);
+            border-bottom: 1px solid rgba(255, 255, 255, .06)
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 0
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            box-shadow: var(--shadow);
+            background: conic-gradient(from 200deg, var(--primary), var(--primary-2), var(--accent));
+        }
+
+        .logo span {
+            font-weight: 900
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px
+        }
+
+        .nav a {
+            position: relative;
+            padding: 8px 10px;
+            border-radius: 10px;
+            color: var(--text);
+            opacity: .9
+        }
+
+        .nav a::after {
+            content: "";
+            position: absolute;
+            left: 10px;
+            right: 10px;
+            bottom: 6px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 2px;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: .25s
+        }
+
+        .nav a:hover::after,
+        .nav a.active::after {
+            transform: scaleX(1)
+        }
+
+        .btn {
+            border: 1px solid rgba(255, 255, 255, .12);
+            background: linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .04));
+            padding: 9px 12px;
+            border-radius: 12px;
+            color: var(--text);
+            cursor: pointer;
+            box-shadow: var(--shadow)
+        }
+
+        .btn.primary {
+            border-color: transparent;
+            background: linear-gradient(135deg, var(--primary), var(--primary-2));
+        }
+
+        /* =====================
+       TICKER (TradingView Ticker Tape)
+    ====================== */
+        .ticker-wrap {
+            border-top: 1px solid rgba(255, 255, 255, .06);
+            border-bottom: 1px solid rgba(255, 255, 255, .06);
+            background: rgba(255, 255, 255, .03)
+        }
+
+        .tv-host {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4px 0
+        }
+
+        .tv-embed {
+            width: 100%;
+        }
+
+        /* =====================
+       LAYOUT / CARDS
+    ====================== */
+        main {
+            padding: 28px 0
+        }
+
+        section {
+            display: none
+        }
+
+        section.active {
+            display: block
+        }
+
+        .grid {
+            display: grid;
+            gap: 16px
+        }
+
+        .cols-3 {
+            grid-template-columns: repeat(3, 1fr)
+        }
+
+        .cols-2 {
+            grid-template-columns: repeat(2, 1fr)
+        }
+
+        @media(max-width:980px) {
+            .cols-3 {
+                grid-template-columns: 1fr
+            }
+
+            .cols-2 {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .card {
+            position: relative;
+            background: linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(255, 255, 255, .03));
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: var(--radius);
+            padding: 18px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px)
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            transition: .25s
+        }
+
+        .muted {
+            color: var(--muted)
+        }
+
+        .kpi {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            font-weight: 900;
+            font-size: 28px
+        }
+
+        .badge {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, .18);
+            background: rgba(255, 255, 255, .06)
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        .table th,
+        .table td {
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+            text-align: left
+        }
+
+        .table th {
+            font-size: 12px;
+            letter-spacing: .02em;
+            color: var(--muted)
+        }
+
+        .table tr:hover {
+            background: rgba(255, 255, 255, .04)
+        }
+
+        /* =====================
+       HERO
+    ====================== */
+        .hero {
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: var(--radius);
+            padding: 28px;
+            background: linear-gradient(180deg, rgba(43, 108, 255, .18), rgba(255, 255, 255, .03));
+            box-shadow: var(--shadow);
+        }
+
+        .title-xl {
+            font-size: 42px;
+            line-height: 1.1;
+            margin: 0 0 8px;
+            font-weight: 900;
+            background: linear-gradient(90deg, #fff, #b9d1ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent
+        }
+
+        .subtitle {
+            color: var(--muted)
+        }
+
+        /* =====================
+       FAB (WhatsApp / Telegram)
+    ====================== */
+        .fab-wrap {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 60
+        }
+
+        .fab {
+            display: grid;
+            place-items: center;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--ring);
+            background: radial-gradient(120% 120% at 30% 20%, rgba(255, 255, 255, .22), rgba(255, 255, 255, .08));
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            position: relative;
+            transition: transform .2s
+        }
+
+        .fab:hover {
+            transform: translateY(-2px)
+        }
+
+        .fab svg {
+            width: 26px;
+            height: 26px
+        }
+
+        .fab .tip {
+            position: absolute;
+            right: 64px;
+            white-space: nowrap;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 6px 10px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, .6);
+            color: #fff;
+            font-size: 12px;
+            opacity: 0;
+            pointer-events: none;
+            transition: .2s
+        }
+
+        .fab:hover .tip {
+            opacity: 1
+        }
+
+        /* =====================
+       ANIMATIONS (reveal)
+    ====================== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(14px);
+            transition: .6s ease
+        }
+
+        .reveal.show {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        footer {
+            margin: 36px 0 18px;
+            color: var(--muted);
+            font-size: 13px;
+            text-align: center
+        }
+    </style>
 </head>
+
 <body>
-  <header>
-    <div class="logo"><i class="fa-solid fa-chart-line"></i> MyTrading</div>
-    <nav>
-      <a href="#home">Home</a>
-      <a href="#about">About</a>
-      <a href="#portfolio">Portfolio</a>
-      <a href="#performance">Performance</a>
-      <a href="#analysis">Analysis</a>
-      <a href="#services">Services</a>
-      <a href="#contact">Contact</a>
-    </nav>
-    <div class="toggle-theme"><i class="fa-solid fa-moon"></i></div>
-  </header>
+    <header>
+        <div class="container nav">
+            <div class="brand">
+                <div class="logo"><span>AA</span></div>
+                <div>
+                    <div style="font-weight:900">Areeb Ali Khan</div>
+                    <div class="muted" style="font-size:12px">Crypto & Markets Analyst</div>
+                </div>
+            </div>
+            <nav>
+                <a href="#home" class="navlink active">Home</a>
+                <a href="#about" class="navlink">About</a>
+                <a href="#portfolio" class="navlink">Setups</a>
+                <a href="#performance" class="navlink">Performance</a>
+                <a href="#analysis" class="navlink">Analysis</a>
+                <a href="#services" class="navlink">Services</a>
+                <a href="#contact" class="navlink">Contact</a>
+            </nav>
+            <div class="right-actions">
+                <button id="themeToggle" class="btn">🌓 Theme</button>
+            </div>
+        </div>
+        <!-- TradingView Ticker Tape (auto theme) -->
+        <div class="ticker-wrap">
+            <div class="tv-host">
+                <div id="tv-ticker" class="tv-embed"></div>
+            </div>
+        </div>
+    </header>
 
-  <section id="home" class="hero">
-    <h1>Trading Portfolio</h1>
-    <p>Transparent setups & performance tracking. Demo UI ready to customize.</p>
-    <div class="ticker">
-      <div class="ticker-item">BTC: $48,250</div>
-      <div class="ticker-item">ETH: $3,150</div>
-      <div class="ticker-item">Gold: $2,320</div>
-      <div class="ticker-item">S&P 500: 5,210</div>
+    <main class="container">
+        <!-- HOME -->
+        <section id="home" class="active">
+            <div class="hero reveal">
+                <h1 class="title-xl">Transparent Trading. Professional Edge.</h1>
+                <p class="subtitle">Setups, performance and macro insights for BTC, ETH, Gold & S&P 500. <span
+                        class="badge">Not financial advice</span></p>
+                <div class="grid cols-3" style="margin-top:14px">
+                    <div class="card reveal">
+                        <div class="muted">Overall Accuracy</div>
+                        <div class="kpi" id="kpi-accuracy">78%</div>
+                    </div>
+                    <div class="card reveal">
+                        <div class="muted">Last 30D Win Rate</div>
+                        <div class="kpi" id="kpi-30d">74%</div>
+                    </div>
+                    <div class="card reveal">
+                        <div class="muted">Open Positions</div>
+                        <div class="kpi" id="kpi-open">3</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid cols-2" style="margin-top:16px">
+                <div class="card reveal">
+                    <h3>Latest Signals (Demo)</h3>
+                    <table class="table" id="latestSignalsTable">
+                        <thead>
+                            <tr>
+                                <th>Asset</th>
+                                <th>Type</th>
+                                <th>Entry</th>
+                                <th>TP</th>
+                                <th>SL</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="card reveal">
+                    <h3>Upcoming Macro</h3>
+                    <ul id="macroList" class="muted" style="line-height:1.8"></ul>
+                </div>
+            </div>
+
+            <!-- MARKET OVERVIEW (TradingView Market Quotes) -->
+            <div class="card reveal" style="margin-top:16px">
+                <h3>Market Overview</h3>
+                <div id="tv-market" class="tv-embed" style="width:100%;min-height:520px"></div>
+            </div>
+        </section>
+
+        <!-- ABOUT -->
+        <section id="about">
+            <div class="grid cols-2">
+                <div class="card reveal">
+                    <h3>About Me</h3>
+                    <p>Hi, I’m <b>Areeb Ali Khan</b> — Crypto & Financial Markets analyst. I combine TA + FA around
+                        macro events (CPI, FOMC, NFP). ACCA in progress → CFA next. This site shows real setups and
+                        results.</p>
+                    <ul class="muted">
+                        <li>Education: ACCA (ongoing), Expert of Blockchain (Coursera)</li>
+                        <li>Core: BTC/ETH, Gold, S&P 500, top alts</li>
+                        <li>Stack: Technicals + macro + data backtests</li>
+                    </ul>
+                </div>
+                <div class="card reveal">
+                    <h3>Principles</h3>
+                    <p class="muted">Risk first • Process over outcome • No cherry-picking. All trades are logged with
+                        outcomes.</p>
+                    <div class="badge">Transparency</div>
+                    <div class="badge">Discipline</div>
+                    <div class="badge">Evidence</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SETUPS -->
+        <section id="portfolio">
+            <div class="card reveal">
+                <h3>Trade Setups</h3>
+                <div class="grid cols-2" style="align-items:end;margin-bottom:8px">
+                    <div style="display:flex;gap:10px;flex-wrap:wrap">
+                        <select id="filter-asset" class="btn">
+                            <option value="">All Assets</option>
+                            <option>BTC</option>
+                            <option>ETH</option>
+                            <option>GOLD</option>
+                            <option>SPX</option>
+                            <option>ALT</option>
+                        </select>
+                        <select id="filter-type" class="btn">
+                            <option value="">All Types</option>
+                            <option>Long</option>
+                            <option>Short</option>
+                            <option>Spot</option>
+                            <option>Futures</option>
+                        </select>
+                        <input id="filter-date" class="btn" type="date" />
+                        <button class="btn" id="btn-clear-filters">Clear</button>
+                    </div>
+                    <div style="text-align:right"><button class="btn primary" id="btn-add-setup">+ Add Setup</button>
+                    </div>
+                </div>
+                <table class="table" id="setupsTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Asset</th>
+                            <th>Type</th>
+                            <th>Entry</th>
+                            <th>TP</th>
+                            <th>SL</th>
+                            <th>Result</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- PERFORMANCE -->
+        <section id="performance">
+            <div class="grid cols-3">
+                <div class="card reveal">
+                    <div class="muted">Overall Accuracy</div>
+                    <div class="kpi" id="perf-accuracy">78%</div>
+                </div>
+                <div class="card reveal">
+                    <div class="muted">Win / Loss</div>
+                    <div class="kpi"><span id="perf-wins">39</span>/<span id="perf-losses">11</span></div>
+                </div>
+                <div class="card reveal">
+                    <div class="muted">This Month</div>
+                    <div class="kpi" id="perf-month">71%</div>
+                </div>
+            </div>
+            <div class="card reveal" style="margin-top:16px">
+                <h3>Monthly Stats</h3>
+                <table class="table" id="monthlyTable">
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Trades</th>
+                            <th>Wins</th>
+                            <th>Losses</th>
+                            <th>Accuracy</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ANALYSIS -->
+        <section id="analysis">
+            <div class="card reveal">
+                <h3>Economic & Market Analysis</h3>
+                <button class="btn" id="btn-add-post">+ New Post</button>
+                <div id="postsList" class="grid cols-2" style="margin-top:12px"></div>
+            </div>
+        </section>
+
+        <!-- SERVICES -->
+        <section id="services">
+            <div class="grid cols-2">
+                <div class="card reveal">
+                    <h3>Services</h3>
+                    <ul style="line-height:1.9">
+                        <li><b>Account Management</b> — Strict risk rules & transparent reporting.</li>
+                        <li><b>Copy Trading</b> — Follow trades with clear allocation & limits.</li>
+                        <li><b>Mentorship</b> — 1:1 or cohort. TA/FA + risk & psychology.</li>
+                        <li><b>Affiliates</b> — Exchange links with disclosures.</li>
+                    </ul>
+                </div>
+                <div class="card reveal">
+                    <h3>Testimonials</h3>
+                    <div id="testimonials" class="grid cols-2"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT -->
+        <section id="contact">
+            <div class="grid cols-2">
+                <div class="card reveal">
+                    <h3>Contact</h3>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px">
+                        <input id="c-name" class="btn" placeholder="Name" />
+                        <input id="c-email" class="btn" placeholder="Email" type="email" />
+                    </div>
+                    <textarea id="c-message" class="btn" rows="5" placeholder="Your message"
+                        style="width:100%"></textarea>
+                    <div style="display:flex;gap:10px;margin-top:10px">
+                        <button class="btn primary" id="btn-send">Send</button>
+                        <button class="btn" id="btn-demo-fill">Fill Demo</button>
+                    </div>
+                </div>
+                <div class="card reveal" id="newsletter">
+                    <h3>Newsletter</h3>
+                    <p class="muted">Weekly market outlooks.</p>
+                    <div style="display:flex;gap:10px">
+                        <input id="n-email" class="btn" placeholder="Your email" type="email" />
+                        <button class="btn" id="btn-subscribe">Subscribe</button>
+                    </div>
+                    <div class="card" style="margin-top:12px">
+                        <h4>Disclaimer</h4>
+                        <p class="muted">Educational content only. Not financial advice. Trading involves risk.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>© <span id="year"></span> Areeb Ali Khan · All rights reserved</footer>
+
+    <!-- Floating Action Buttons -->
+    <div class="fab-wrap">
+        <a class="fab" href="https://wa.me/000000000" target="_blank" title="WhatsApp">
+            <span class="tip">Chat on WhatsApp</span>
+            <!-- WhatsApp SVG -->
+            <svg viewBox="0 0 32 32" fill="none">
+                <path
+                    d="M16 3C9.37 3 4 8.37 4 15c0 2.53.84 4.86 2.26 6.74L5 29l7.45-1.96C13.5 27.67 14.73 28 16 28c6.63 0 12-5.37 12-12S22.63 3 16 3Z"
+                    stroke="rgba(255,255,255,.8)" stroke-width="2" />
+                <path
+                    d="M20.6 18.2c-.2.6-1.1 1.1-1.6 1.2-.4.1-.9.1-1.5-.1-.3-.1-.7-.2-1.2-.5-2.1-1.2-3.4-3.1-3.5-3.2-.1-.1-.8-1-.8-2s.5-1.5.7-1.7c.2-.2.5-.2.6-.2h.4c.2 0 .3 0 .4.3.2.4.6 1.5.6 1.6.1.1.1.3 0 .5-.1.2-.2.3-.3.4-.2.2-.4.4-.2.8.2.4.8 1.3 1.7 2.1 1.2 1.1 2.2 1.4 2.6 1.6.3.1.6.1.8-.1.3-.3.7-.9.9-1.3.2-.4.4-.3.6-.2.3.1 1.5.7 1.8.8.3.1.5.2.6.3.1.2.1.7-.1 1.3Z"
+                    fill="#16c784" />
+            </svg>
+        </a>
+        <a class="fab" href="https://t.me/demo" target="_blank" title="Telegram">
+            <span class="tip">Message on Telegram</span>
+            <!-- Telegram SVG -->
+            <svg viewBox="0 0 32 32" fill="none">
+                <circle cx="16" cy="16" r="13" stroke="rgba(255,255,255,.8)" stroke-width="2" />
+                <path
+                    d="M23.5 10.3c.3-.13.6.12.5.44l-2.6 11.1c-.07.3-.42.43-.66.28l-4.2-2.6-2 1.9c-.24.23-.64.1-.71-.21l-.8-3.6-3.3-1.3c-.32-.12-.32-.58 0-.71l14.77-5.31Z"
+                    fill="#2b6cff" />
+                <path d="M13.2 17.7 22 12.8" stroke="#fff" stroke-width="1.2" />
+            </svg>
+        </a>
     </div>
-  </section>
 
-  <section id="about">
-    <h2>About Me</h2>
-    <div class="cards">
-      <div class="card">
-        <h3>Education</h3>
-        <p>ACCA (in progress), CFA planned, Blockchain Certification.</p>
-      </div>
-      <div class="card">
-        <h3>Experience</h3>
-        <p>5+ years in crypto and forex trading with focus on TA + FA.</p>
-      </div>
-      <div class="card">
-        <h3>Philosophy</h3>
-        <p>Risk management, transparency, and disciplined execution.</p>
-      </div>
-    </div>
-  </section>
+    <script type="module">
+        /**********************
+         * SETTINGS
+         **********************/
+        const USE_DEMO = true; // set to false when you connect Firebase
 
-  <section id="portfolio">
-    <h2>Trade Setups (Demo)</h2>
-    <div class="cards">
-      <div class="card">
-        <h3>BTC Long</h3>
-        <p>Entry: 45,000<br>TP: 48,000<br>SL: 44,000<br>Result: ✅ Win</p>
-      </div>
-      <div class="card">
-        <h3>ETH Short</h3>
-        <p>Entry: 3,400<br>TP: 3,200<br>SL: 3,500<br>Result: ❌ Loss</p>
-      </div>
-    </div>
-  </section>
+        /**********************
+         * THEME TOGGLE + TV WIDGETS
+         **********************/
+        const root = document.documentElement;
+        const themeToggle = document.getElementById('themeToggle');
+        let currentTheme = 'dark';
 
-  <section id="performance">
-    <h2>Performance</h2>
-    <div class="cards">
-      <div class="card">
-        <h3>Overall Accuracy</h3>
-        <p>72% win rate</p>
-      </div>
-      <div class="card">
-        <h3>July 2025</h3>
-        <p>Trades: 28<br>Wins: 20<br>Losses: 8</p>
-      </div>
-    </div>
-  </section>
+        themeToggle.addEventListener('click', () => {
+            // flip between dark shades only (keep palette)
+            const darkBg = getComputedStyle(root).getPropertyValue('--bg');
+            root.style.setProperty('--bg', getComputedStyle(root).getPropertyValue('--bg-alt'));
+            root.style.setProperty('--bg-alt', darkBg);
+            // toggle theme flag and reload widgets
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            loadTickerTape();
+            loadMarketQuotes();
+        });
 
-  <section id="analysis">
-    <h2>Market Analysis (Demo)</h2>
-    <div class="cards">
-      <div class="card">
-        <h3>CPI Update</h3>
-        <p>US CPI came in lower than forecast → bullish for risk assets.</p>
-      </div>
-      <div class="card">
-        <h3>BTC Outlook</h3>
-        <p>BTC testing resistance at $48k, breakout could target $50k.</p>
-      </div>
-    </div>
-  </section>
+        /**********************
+         * SPA NAV
+         **********************/
+        const links = document.querySelectorAll('.navlink');
+        const sections = document.querySelectorAll('main section');
+        function show(hash) {
+            const id = (hash || '#home').replace('#', '');
+            sections.forEach(s => s.classList.toggle('active', s.id === id));
+            links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + id));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        window.addEventListener('hashchange', () => show(location.hash));
+        show(location.hash);
 
-  <section id="services">
-    <h2>Services</h2>
-    <div class="cards">
-      <div class="card">
-        <h3>Account Management</h3>
-        <p>Professional handling with strict risk rules.</p>
-      </div>
-      <div class="card">
-        <h3>Copy Trading</h3>
-        <p>Follow trades with full transparency.</p>
-      </div>
-      <div class="card">
-        <h3>Mentorship</h3>
-        <p>1-on-1 sessions on strategy & psychology.</p>
-      </div>
-    </div>
-  </section>
+        /**********************
+         * REVEAL ANIMATIONS
+         **********************/
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); } })
+        }, { threshold: .12 });
+        document.querySelectorAll('.reveal, .card').forEach(el => io.observe(el));
 
-  <section id="contact">
-    <h2>Contact</h2>
-    <form id="contactForm" class="card">
-      <input type="text" placeholder="Your Name" required><br><br>
-      <input type="email" placeholder="Your Email" required><br><br>
-      <textarea placeholder="Message" required></textarea><br><br>
-      <button type="submit" class="btn">Send</button>
-    </form>
-    <div style="margin-top:1rem;">
-      <a href="https://wa.me/000000000" class="btn"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
-      <a href="https://t.me/demo" class="btn"><i class="fa-brands fa-telegram"></i> Telegram</a>
-    </div>
-  </section>
+        /**********************
+         * TRADINGVIEW WIDGETS (dynamic theme)
+         **********************/
+        function injectTVScript(container, src, config) {
+            container.innerHTML = '';
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.async = true;
+            script.src = src;
+            script.text = JSON.stringify(config);
+            container.appendChild(script);
+        }
 
-  <footer>
-    <p>© 2025 MyTrading – This is not financial advice.</p>
-  </footer>
+        function loadTickerTape() {
+            const cont = document.getElementById('tv-ticker');
+            const cfg = {
+                symbols: [
+                    { proName: 'FOREXCOM:SPXUSD', title: 'S&P 500 Index' },
+                    // { proName: 'FX_IDC:EURUSD', title: 'EUR to USD' },
+                    { proName: 'BITSTAMP:BTCUSD', title: 'Bitcoin' },
+                    { proName: 'BITSTAMP:ETHUSD', title: 'Ethereum' },
+                    { proName: "OANDA:XAUUSD", title: "Gold" }
 
-  <script>
-    const toggleBtn = document.querySelector('.toggle-theme');
-    toggleBtn.addEventListener('click', ()=>{
-      document.body.classList.toggle('dark');
-    });
+                ],
+                colorTheme: currentTheme,
+                locale: 'en',
+                largeChartUrl: '',
+                isTransparent: false,
+                showSymbolLogo: true,
+                displayMode: 'regular'
+            };
+            injectTVScript(cont, 'https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js', cfg);
+        }
 
-    // Firebase placeholder – replace with your config
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_DOMAIN",
-      projectId: "YOUR_PROJECT_ID",
-    };
-  </script>
+        function loadMarketQuotes() {
+            const cont = document.getElementById('tv-market');
+            const cfg = {
+                colorTheme: currentTheme,
+                locale: 'en',
+                largeChartUrl: '',
+                isTransparent: false,
+                showSymbolLogo: true,
+                support_host: 'https://www.tradingview.com',
+                width: '100%',
+                height: 520,
+                symbolsGroups: [
+                    {
+                        name: 'Futures',
+                        symbols: [
+                            { name: 'BMFBOVESPA:ISP1!', displayName: 'S&P 500' },
+                            { name: 'BMFBOVESPA:EUR1!', displayName: 'Euro' },
+                            { name: 'CMCMARKETS:GOLD', displayName: 'Gold' },
+                            { name: 'PYTH:WTI3!', displayName: 'WTI Crude Oil' }
+                        ]
+                    },
+                    {
+                        name: 'Crypto',
+                        symbols: [
+                            { name: 'BINANCE:BTCUSDT', displayName: 'Bitcoin' },
+                            { name: 'BINANCE:ETHUSDT', displayName: 'Ethereum' },
+                            { name: 'BINANCE:SUIUSDT', displayName: 'Sui' },
+                            { name: 'MEXC:TUPUSDT', displayName: 'TenUp' }
+                        ]
+                    },
+                    {
+                        name: 'Stocks',
+                        symbols: [
+                            { name: 'GETTEX:NVD', displayName: 'Nvidia' },
+                            { name: 'GETTEX:AMZ', displayName: 'Amazon' },
+                            { name: 'TSX:TSLA', displayName: 'Tesla' },
+                            { name: 'TSX:AAPL', displayName: 'Apple' }
+                        ]
+                    }
+                ]
+            };
+            injectTVScript(cont, 'https://s3.tradingview.com/external-embedding/embed-widget-market-quotes.js', cfg);
+        }
+
+        // Initial mount
+        loadTickerTape();
+        loadMarketQuotes();
+
+        /**********************
+         * DEMO DATA
+         **********************/
+        const demoSetups = [
+            { date: '2025-08-10', asset: 'BTC', type: 'Long', entry: 45800, tp: 48600, sl: 44400, result: 'Win' },
+            { date: '2025-08-12', asset: 'ETH', type: 'Short', entry: 3400, tp: 3200, sl: 3500, result: 'Loss' },
+            { date: '2025-08-15', asset: 'GOLD', type: 'Long', entry: 2310, tp: 2335, sl: 2292, result: 'Win' },
+            { date: '2025-08-18', asset: 'SPX', type: 'Short', entry: 5255, tp: 5180, sl: 5285, result: 'Open' },
+        ];
+        const demoPosts = [
+            { title: 'CPI: Slight Miss, Watch DXY Pullback', tag: 'macro', date: '2025-08-05', body: 'US CPI prints slightly above forecast. Base effects fading. Risk assets choppy → prefer confirmed breakouts only.' },
+            { title: 'BTC 48k Breakout Map', tag: 'btc', date: '2025-08-11', body: 'Liquidity above 48.2k. If reclaimed → 50k magnet. If rejected → 46.2k retest.' },
+            { title: 'FOMC Preview: Dovish Hold?', tag: 'macro', date: '2025-08-19', body: 'Market pricing no hike; dot plot in focus. Watch real yields & gold correlation.' }
+        ];
+        const demoMonthly = [
+            { month: 'May 2025', trades: 32, wins: 23, losses: 9, accuracy: 72 },
+            { month: 'Jun 2025', trades: 27, wins: 19, losses: 8, accuracy: 70 },
+            { month: 'Jul 2025', trades: 28, wins: 20, losses: 8, accuracy: 71 },
+        ];
+        const demoTestimonials = [
+            { name: 'Hamza S.', text: 'Clear levels, disciplined risk. Loved the transparency.' },
+            { name: 'Sara I.', text: 'Mentorship boosted my process and journaling.' },
+            { name: 'Danish R.', text: 'Signals around CPI/FOMC were spot on with context.' },
+            { name: 'Ayesha K.', text: 'Professional and honest. Showed both wins and losses.' },
+        ];
+
+        function renderLatestSignals(list) {
+            const body = document.querySelector('#latestSignalsTable tbody');
+            const rows = list.slice(0, 5).map(x => `<tr><td>${x.asset}</td><td>${x.type}</td><td>${x.entry}</td><td>${x.tp}</td><td>${x.sl}</td><td>${x.result}</td></tr>`).join('');
+            body.innerHTML = rows || `<tr><td colspan="6" class="muted">No signals yet.</td></tr>`;
+        }
+        function renderSetups(list) {
+            const fa = document.getElementById('filter-asset').value;
+            const ft = document.getElementById('filter-type').value;
+            const fd = document.getElementById('filter-date').value;
+            const rows = list.filter(x => (!fa || x.asset === fa) && (!ft || x.type === ft) && (!fd || x.date === fd)).map(x => `
+        <tr>
+          <td>${x.date}</td><td>${x.asset}</td><td>${x.type}</td><td>${x.entry}</td><td>${x.tp}</td><td>${x.sl}</td><td>${x.result}</td>
+        </tr>`).join('');
+            document.querySelector('#setupsTable tbody').innerHTML = rows || `<tr><td colspan="7" class="muted">No setups yet.</td></tr>`;
+        }
+        function renderMacro(list) {
+            const macro = list.filter(x => x.tag === 'macro').slice(0, 6);
+            document.getElementById('macroList').innerHTML = macro.map(m => `<li>${m.date} — ${m.title}</li>`).join('');
+        }
+        function renderPosts(list) {
+            const wrap = document.getElementById('postsList');
+            wrap.innerHTML = list.map(p => `<div class="card"><div class="badge">${p.tag.toUpperCase()}</div><h3>${p.title}</h3><div class="muted" style="font-size:12px">${p.date}</div><p>${p.body}</p></div>`).join('');
+        }
+        function renderMonthly(list) {
+            document.querySelector('#monthlyTable tbody').innerHTML = list.map(m => `<tr><td>${m.month}</td><td>${m.trades}</td><td>${m.wins}</td><td>${m.losses}</td><td>${m.accuracy}%</td></tr>`).join('');
+        }
+        function renderTestimonials(list) {
+            document.getElementById('testimonials').innerHTML = list.map(t => `<div class="card"><p>“${t.text}”</p><div class="muted">— ${t.name}</div></div>`).join('');
+        }
+
+        // Filters
+        document.getElementById('btn-clear-filters').onclick = () => { document.getElementById('filter-asset').value = ''; document.getElementById('filter-type').value = ''; document.getElementById('filter-date').value = ''; renderSetups(demoSetups) }
+
+        // Demo contact
+        document.getElementById('btn-demo-fill').onclick = () => {
+            document.getElementById('c-name').value = 'Areeb Demo';
+            document.getElementById('c-email').value = 'demo@example.com';
+            document.getElementById('c-message').value = 'Hi! I loved your BTC write-up. Can we discuss mentorship?';
+        }
+
+        /**********************
+         * FIREBASE (placeholder)
+         **********************/
+        // When ready: set USE_DEMO=false and configure Firebase here
+        if (!USE_DEMO) {
+            const { initializeApp } = await import('https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js');
+            const { getFirestore } = await import('https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js');
+            const app = initializeApp({
+                apiKey: "YOUR_API_KEY",
+                authDomain: "YOUR_PROJECT.firebaseapp.com",
+                projectId: "YOUR_PROJECT_ID",
+                storageBucket: "YOUR_PROJECT.appspot.com",
+                messagingSenderId: "YOUR_SENDER_ID",
+                appId: "YOUR_APP_ID"
+            });
+            const db = getFirestore(app);
+            // TODO: wire Firestore collections (setups, posts, performance, messages, newsletter, testimonials)
+        }
+
+        /**********************
+         * INIT (Demo render)
+         **********************/
+        renderLatestSignals(demoSetups);
+        renderSetups(demoSetups);
+        renderMacro(demoPosts);
+        renderPosts(demoPosts);
+        renderMonthly(demoMonthly);
+        renderTestimonials(demoTestimonials);
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
 </body>
+
 </html>
